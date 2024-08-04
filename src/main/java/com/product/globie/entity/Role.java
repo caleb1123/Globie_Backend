@@ -26,3 +26,4 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private Collection<Account> accounts;
 }
+
