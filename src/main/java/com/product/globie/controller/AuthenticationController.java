@@ -1,6 +1,7 @@
 package com.product.globie.controller;
 
 import com.product.globie.exception.AppException;
+import com.product.globie.payload.request.AuthenticationRequest;
 import com.product.globie.payload.response.ApiResponse;
 import com.product.globie.payload.response.AuthenticationResponse;
 import com.product.globie.payload.request.SignUpRequest;
@@ -41,5 +42,25 @@ public class AuthenticationController {
                     .build();
         }
     }
-
+    @PostMapping("/login")
+    public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        try {
+            AuthenticationResponse authResponse = authenticationService.login(request);
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Login successful")
+                    .data(authResponse)
+                    .build();
+        } catch (AppException e) {
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(e.getErrorCode().getStatusCode().value())
+                    .message(e.getMessage())
+                    .build();
+        } catch (RuntimeException e) {
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An error occurred during login")
+                    .build();
+        }
+    }
 }
