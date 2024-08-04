@@ -14,9 +14,9 @@ public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postImageId;
-    @Column(name = "imagePath", nullable = false)
+    @Column(nullable = false)
     private String imagePath;
-    @Column(name = "status")
+    @Column
     private boolean status;
     @ManyToOne
     @JoinColumn(name = "postId")

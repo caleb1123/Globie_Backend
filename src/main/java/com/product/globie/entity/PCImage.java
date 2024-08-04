@@ -14,11 +14,11 @@ public class PCImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pcImageId;
-    @Column(name = "PCImageCode", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String pcImageCode;
-    @Column(name = "imagePath", nullable = false)
+    @Column
     private String imagePath;
-    @Column(name = "status")
+    @Column
     private boolean status;
     @ManyToOne
     @JoinColumn(name = "pcId")

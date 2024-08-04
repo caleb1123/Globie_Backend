@@ -19,13 +19,13 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productCategoryId;
 
-    @Column(name = "categoryName", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
-    @Column(name = "description")
+    @Column
     private String description;
 
-    @Column(name = "status")
+    @Column
     private boolean status;
 
     @OneToMany(mappedBy = "productCategory")

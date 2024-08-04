@@ -18,19 +18,19 @@ public class PC {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pcId;
 
-    @Column(name = "pcCode", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String pcCode;
 
-    @Column(name = "pcName", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String pcName;
 
-    @Column(name = "pcDescription")
+    @Column
     private String pcDescription;
 
-    @Column(name = "pcPrice", nullable = false)
+    @Column(nullable = false)
     private double pcPrice;
 
-    @Column(name = "pcQuantity", nullable = false)
+    @Column(nullable = false)
     private int pcQuantity;
 
     @Column(name = "pcStatus")

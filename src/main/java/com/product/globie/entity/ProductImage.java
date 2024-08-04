@@ -15,13 +15,13 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productImageId;
 
-    @Column(name = "ProdcutImageCode", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String productImageCode;
 
-    @Column(name = "imagePath", nullable = false)
+    @Column(nullable = false)
     private String imagePath;
 
-    @Column(name = "status")
+    @Column
     private boolean status;
 
     @ManyToOne

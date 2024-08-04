@@ -18,22 +18,22 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
-    @Column(name = "productCode", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String productCode;
 
-    @Column(name = "productName", nullable = false)
+    @Column(nullable = false)
     private String productName;
 
-    @Column(name = "description")
+    @Column
     private String description;
 
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false)
     private double price;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private int quantity;
 
-    @Column(name = "status")
+    @Column
     private boolean status;
 
     @ManyToOne

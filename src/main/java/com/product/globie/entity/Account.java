@@ -19,29 +19,31 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int accountId;
-    @Column(name = "userName", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String userName;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "avatar")
+    @Column
     private String avatar;
 
-    @Column(name = "dob")
+    @Column
     private Date dob;
 
-    @Column(name = "phone", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String phone;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "sex")
+    @Column
     private String sex;
 
-    @Column(name = "address")
+    @Column
     private String address;
+    @Column
+    private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "roleId")

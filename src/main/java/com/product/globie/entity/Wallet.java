@@ -19,13 +19,13 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int walletId;
 
-    @Column(name = "balance")
+    @Column(nullable = false)
     private double balance;
 
-    @Column(name = "createAt")
+    @Column
     private LocalDate createAt;
 
-    @Column(name = "updateAt")
+    @Column
     private LocalDate updateAt;
 
     @Column(name = "status")

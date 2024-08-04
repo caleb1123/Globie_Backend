@@ -22,13 +22,13 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postId;
 
-    @Column(name = "postTitle", nullable = false)
+    @Column(nullable = false)
     private String postTitle;
 
-    @Column(name = "postContent", nullable = false)
+    @Column(nullable = false)
     private String postContent;
 
-    @Column(name = "status")
+    @Column
     private boolean status;
 
     @ManyToOne
