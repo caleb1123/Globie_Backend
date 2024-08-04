@@ -125,7 +125,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(encodedPassword);
         Account account = mapper.map(request, Account.class);
-        Role userRole = roleRepository.findByRoleName("USER")
+        Role userRole = roleRepository.findRoleByRoleId(4)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         account.setRole(userRole);
         account.setStatus(false);
