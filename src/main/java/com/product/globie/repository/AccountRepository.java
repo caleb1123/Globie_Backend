@@ -18,7 +18,8 @@ public interface AccountRepository extends JpaRepository<Account,Integer> {
             "FROM account " +
             "WHERE email = :email " +
             "   OR user_name = :userName " +
-            "   OR phone = :phone", nativeQuery = true)
+            "   OR phone = :phone " +
+            "   AND status = 1", nativeQuery = true)
     Optional<Account> findAccountByUserNameOrEmailOrPhone(@Param("userName") String userName,
                                                           @Param("email") String email,
                                                           @Param("phone") String phone);

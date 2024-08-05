@@ -8,6 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import com.product.globie.entity.Account;
 import com.product.globie.entity.Role;
+import com.product.globie.entity.Token;
 import com.product.globie.exception.AppException;
 import com.product.globie.exception.ErrorCode;
 import com.product.globie.payload.request.IntrospectRequest;
@@ -17,6 +18,7 @@ import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
 import com.product.globie.repository.AccountRepository;
 import com.product.globie.repository.RoleRepository;
+import com.product.globie.repository.TokenRepository;
 import com.product.globie.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,7 +30,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ModelMapper mapper;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Value("${app.jwt-secret}")
     private String SIGNER_KEY;
@@ -95,12 +101,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Optional<Account> optionalUser = accountRepository
                 .findAccountByUserNameOrEmailOrPhone(request.getUserName(), request.getUserName(), request.getUserName());
-        Account user = optionalUser.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Account user = optionalUser.orElseThrow(() -> new AppException(ErrorCode.UNABLE_TO_LOGIN));
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) throw new AppException(ErrorCode.PASSWORD_NOT_CORRECT);
 
         var token = generateToken(user);
+        Date expirationInstant = new Date(
+                Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+        );
+        Token tokenE = new Token();
+        tokenE.setAccount(user);
+        tokenE.setToken(token);
+        tokenE.setExpiryDate(expirationInstant);
+        tokenE.setTokenType("ACCESS");
+        tokenRepository.save(tokenE);
+
 
         return AuthenticationResponse.builder()
                 .token(token)

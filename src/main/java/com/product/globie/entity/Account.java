@@ -54,4 +54,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private Collection<Post> posts;
+
+    @OneToMany(mappedBy = "account")
+    private Collection<Token> tokens;
 }

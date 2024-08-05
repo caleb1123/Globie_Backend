@@ -19,7 +19,9 @@ public enum ErrorCode {
     EMAIL_TAKEN(1010, "Email already in use", HttpStatus.BAD_REQUEST),
     EMPTY_FIELD(1011, "You cannot leave required field(s) empty", HttpStatus.BAD_REQUEST),
     ITEM_NOT_FOUND(1012, "Item not found", HttpStatus.NOT_FOUND),
-    PHONE_TAKEN(1013, "Phone number already in use", HttpStatus.BAD_REQUEST);
+    PHONE_TAKEN(1013, "Phone number already in use", HttpStatus.BAD_REQUEST),
+    UNABLE_TO_LOGIN(1014, "Login fail", HttpStatus.NOT_FOUND);
+
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.message = message;
