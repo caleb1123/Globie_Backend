@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import com.product.globie.entity.Account;
 import com.product.globie.entity.Role;
 import com.product.globie.exception.AppException;
@@ -17,6 +18,7 @@ import com.product.globie.payload.response.IntrospectResponse;
 import com.product.globie.repository.AccountRepository;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.service.AuthenticationService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private AccountRepository accountRepository;
@@ -151,6 +154,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return IntrospectResponse.builder().valid(isValid).build();
     }
+
+    @Override
+    public void logout(com.product.globie.payload.request.LogoutRequest logoutRequest) {
+        try {
+            var signToken = verifyToken(logoutRequest.getToken(), true);
+
+            // Optionally, you can log the logout event or perform any necessary cleanup here.
+            log.info("User logged out with token ID: {}", signToken.getJWTClaimsSet().getJWTID());
+        } catch (AppException exception) {
+            log.info("Token already expired");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);

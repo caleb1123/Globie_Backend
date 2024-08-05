@@ -1,6 +1,7 @@
 package com.product.globie.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,19 +17,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SercutiryConfig {
-    private final String [] PUBLIC_ENDPOINTS = {
-        "/authen/**",
-    };
+    @Value("${api.version}")
+    private String apiVersion;
+
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS) .permitAll()
-                .requestMatchers(HttpMethod.GET,PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers(HttpMethod.PUT,PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers(HttpMethod.DELETE,PUBLIC_ENDPOINTS).permitAll()
+        String[] publicEndpoints = new String[]{
+                apiVersion + "/authen/**",
+        };
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers(HttpMethod.POST, publicEndpoints).permitAll()
+                .requestMatchers(HttpMethod.GET, publicEndpoints).permitAll()
+                .requestMatchers(HttpMethod.PUT, publicEndpoints).permitAll()
+                .requestMatchers(HttpMethod.DELETE, publicEndpoints).permitAll()
                 .anyRequest()
                 .authenticated());
 
