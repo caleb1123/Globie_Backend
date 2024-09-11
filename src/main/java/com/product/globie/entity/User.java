@@ -10,15 +10,16 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "Users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Account {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountId;
+    private int userId;
+
     @Column(nullable = false, unique = true)
     private String userName;
 
@@ -45,16 +46,34 @@ public class Account {
     @Column
     private boolean status;
 
+    @Column
+    private Date created_Time;
+
+    @Column
+    private Date updated_Time;
+
     @ManyToOne
     @JoinColumn(name = "roleId")
     private Role role;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "user")
     private Wallet wallet;
 
-    @OneToMany(mappedBy = "account")
+    @OneToOne(mappedBy = "user")
+    private UserMember userMember;
+
+    @OneToMany(mappedBy = "user")
     private Collection<Post> posts;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "user")
     private Collection<Token> tokens;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Rate> rates;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Transaction> transactions;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<MemberHistory> memberHistories;
 }

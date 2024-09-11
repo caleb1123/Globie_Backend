@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Collection;
+
 @Entity
-@Table(name = "Post_Category")
+@Table(name = "PostCategory")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,4 +21,7 @@ public class PostCategory {
     private String categoryName;
     @Column
     private boolean status;
+
+    @OneToMany(mappedBy = "postCategory")
+    private Collection<Post> posts;
 }

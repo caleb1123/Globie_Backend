@@ -23,15 +23,15 @@ public class Wallet {
     private double balance;
 
     @Column
-    private LocalDate createAt;
+    private LocalDate createdTime;
 
     @Column
-    private LocalDate updateAt;
+    private LocalDate updatedTime;
 
     @Column(name = "status")
     private boolean status;
 
     @OneToOne
-    @JoinColumn(name = "accountId")
-    private Account account;
+    @JoinColumn(name = "userId")
+    private User user;
 }

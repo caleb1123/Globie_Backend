@@ -5,8 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.openid.connect.sdk.LogoutRequest;
-import com.product.globie.entity.Account;
+import com.product.globie.entity.User;
 import com.product.globie.entity.Role;
 import com.product.globie.entity.Token;
 import com.product.globie.exception.AppException;
@@ -30,9 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,18 +59,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.mapper = mapper;
     }
 
-    private String generateToken(Account account) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(account.getUserName())
+                .subject(user.getUserName())
                 .issuer("Mercury.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(account))
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -87,8 +84,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException(e);
         }
     }
-    private String buildScope(Account account) {
-        Role role = account.getRole();
+    private String buildScope(User user) {
+        Role role = user.getRole();
         if (role != null) {
             return role.getRoleName().name(); // Assuming roleName is an enum or string
         }
@@ -99,9 +96,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse login(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Optional<Account> optionalUser = accountRepository
+        Optional<User> optionalUser = accountRepository
                 .findAccountByUserNameOrEmailOrPhone(request.getUserName(), request.getUserName(), request.getUserName());
-        Account user = optionalUser.orElseThrow(() -> new AppException(ErrorCode.UNABLE_TO_LOGIN));
+        User user = optionalUser.orElseThrow(() -> new AppException(ErrorCode.UNABLE_TO_LOGIN));
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) throw new AppException(ErrorCode.PASSWORD_NOT_CORRECT);
@@ -111,7 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
         );
         Token tokenE = new Token();
-        tokenE.setAccount(user);
+        tokenE.setUser(user);
         tokenE.setToken(token);
         tokenE.setExpiryDate(expirationInstant);
         tokenE.setTokenType("ACCESS");
@@ -143,14 +140,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(encodedPassword);
-        Account account = mapper.map(request, Account.class);
+        User user = mapper.map(request, User.class);
         Role userRole = roleRepository.findRoleByRoleId(4)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        account.setRole(userRole);
-        account.setStatus(false);
-        accountRepository.save(account);
+        user.setRole(userRole);
+        user.setStatus(false);
+        accountRepository.save(user);
         return AuthenticationResponse.builder()
-                .token(generateToken(account))
+                .token(generateToken(user))
                 .authenticated(true)
                 .build();
 

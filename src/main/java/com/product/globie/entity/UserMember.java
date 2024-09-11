@@ -5,26 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
-import java.util.Date;
 
 @Entity
-@Table(name = "Token")
+@Table(name = "UserMember")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Token {
+public class UserMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tokenId;
+    private int userMemberId ;
+
     @Column
-    private String token;
+    private LocalDate memberStartDate;
+
     @Column
-    private Date expiryDate;
-    @Column
-    private String tokenType;
-    @ManyToOne
-    @JoinColumn(name = "accountId")
+    private LocalDate memberEndDate;
+
+    @OneToOne
+    @JoinColumn(name = "userId")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "memberLevelId")
+    private MemberLevel memberLevel;
 }

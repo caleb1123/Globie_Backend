@@ -4,24 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 @Entity
-@Table(name = "Product_PC")
+@Table(name = "OrderDetail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductPC {
+public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pcDetailId;
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "amount", nullable = false)
+    private Integer amount;
+
     @ManyToOne
-    @JoinColumn(name = "pcCode")
-    private PC pc;
+    @JoinColumn(name = "order_code", nullable = false)
+    private Order order;
+
     @ManyToOne
-    @JoinColumn(name = "productCode")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
 
 }

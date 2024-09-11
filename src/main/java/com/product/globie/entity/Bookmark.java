@@ -1,5 +1,4 @@
 package com.product.globie.entity;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,23 +7,28 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+
 @Entity
-@Table(name = "Token")
+@Table(name = "Bookmark")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Token {
+public class Bookmark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tokenId;
-    @Column
-    private String token;
-    @Column
-    private Date expiryDate;
-    @Column
-    private String tokenType;
+    @Column(name = "bookmark_id")
+    private int bookmarkId;
+
+    @Column(name = "created_time", nullable = false)
+    private Date createdTime;
+
     @ManyToOne
-    @JoinColumn(name = "accountId")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
 }
