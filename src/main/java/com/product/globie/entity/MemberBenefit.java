@@ -4,23 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 @Entity
-@Table(name = "PCImage")
+@Table(name = "MemberBenefit")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PCImage {
+public class MemberBenefit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pcImageId;
-    @Column(nullable = false, unique = true)
-    private String pcImageCode;
+    private int benefitId;
+
     @Column
-    private String imagePath;
-    @Column
-    private boolean status;
+    private String benefitDescription;
+
     @ManyToOne
-    @JoinColumn(name = "pcId")
-    private PC pc;
+    @JoinColumn(name = "memberLevelId", nullable = false)
+    private MemberLevel memberLevel;
 }

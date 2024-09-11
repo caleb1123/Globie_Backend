@@ -24,6 +24,6 @@ public class Role {
     private ERole roleName;
 
     @OneToMany(mappedBy = "role")
-    private Collection<Account> accounts;
+    private Collection<User> users;
 }
 

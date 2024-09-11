@@ -31,4 +31,7 @@ public class ProductCategory {
     @OneToMany(mappedBy = "productCategory")
     private Collection<Product> products;
 
+    @OneToMany(mappedBy = "productCategory")
+    private Collection<Attribute> attributes;
+
 }

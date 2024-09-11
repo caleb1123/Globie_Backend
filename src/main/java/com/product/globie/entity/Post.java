@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Date;
 
 @Entity
 @Table(name = "Post")
@@ -28,6 +28,12 @@ public class Post {
     @Column(nullable = false)
     private String postContent;
 
+    @Column(name = "created_time")
+    private Date createdTime;
+
+    @Column(name = "updated_time")
+    private Date updatedTime;
+
     @Column
     private boolean status;
 
@@ -36,11 +42,14 @@ public class Post {
     private PostCategory postCategory;
 
     @ManyToOne
-    @JoinColumn(name = "accountId")
-    private Account account;
+    @JoinColumn(name = "userId")
+    private User user;
 
     @OneToMany(mappedBy = "post")
     private Collection<PostImage> postImages;
+
+    @OneToMany(mappedBy = "post")
+    private Collection<Comment> comments;
 
 
 }
