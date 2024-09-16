@@ -27,6 +27,9 @@ public class User {
     private String password;
 
     @Column
+    private String fullName;
+
+    @Column
     private String avatar;
 
     @Column

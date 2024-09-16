@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.product.globie.entity.OTPToken;
 import com.product.globie.entity.User;
 import com.product.globie.entity.Role;
 import com.product.globie.exception.AppException;
@@ -15,8 +16,10 @@ import com.product.globie.payload.request.AuthenticationRequest;
 import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
 import com.product.globie.repository.AccountRepository;
+import com.product.globie.repository.OTPRepository;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.service.AuthenticationService;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -41,6 +45,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ModelMapper mapper;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private MailService emailService;
+    @Autowired
+    private OTPRepository otpRepository;
 
 
     @Value("${app.jwt-secret}")
@@ -104,7 +112,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Date expirationInstant = new Date(
                 Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
         );
-
 
 
         return AuthenticationResponse.builder()
@@ -176,6 +183,44 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Override
+    public void sendOTPActiveAccount(String email) throws MessagingException {
+        String otpCode = generateOTP();
+        var user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        // Tạo đối tượng OTP
+        OTPToken otp = OTPToken.builder()
+                .email(email)
+                .otp(otpCode)
+                .expiryDate(Instant.now().plus(15, ChronoUnit.MINUTES))  // OTP hết hạn sau 15 phút
+                .build();
+
+        // Lưu OTP vào database
+        otpRepository.save(otp);
+
+        // Gửi OTP tới email người dùng
+        emailService.sendOTPtoActiveAccount(email, otpCode, user.getFullName());
+    }
+
+    @Override
+    public boolean verifyOTPActiveAccount(String email, String otp) {
+        // Kiểm tra xem OTP có hợp lệ không
+        OTPToken otpToken = otpRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.OTP_NOT_FOUND));
+
+        if (otpToken.isExpired()) {
+            otpRepository.delete(otpToken);
+            throw new AppException(ErrorCode.OTP_EXPIRED);
+        }
+        if (otpToken.getOtp().equals(otp)) {
+            // Cập nhật trạng thái tài khoản
+            User user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            user.setStatus(true);
+            accountRepository.save(user);
+            otpRepository.delete(otpToken);
+            return true;
+        }
+        return false;
+    }
 
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
@@ -203,4 +248,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return signedJWT;
     }
 
+    public String generateOTP() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000));  // Tạo OTP 6 chữ số
+    }
 }

@@ -14,10 +14,9 @@ import com.product.globie.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessagingException;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -104,6 +103,32 @@ public class AuthenticationController {
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .message("An error occurred during logout")
                     .build();
+        }
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<String> sendOTP(@RequestParam String email) {
+        try {
+            authenticationService.sendOTPActiveAccount(email);  // Gọi service tạo và gửi OTP
+            return ResponseEntity.ok("OTP has been sent to " + email);
+        } catch (AppException e) {
+            return ResponseEntity.status(404).body("User not found.");
+        } catch (MessagingException | jakarta.mail.MessagingException e) {
+            return ResponseEntity.status(500).body("Failed to send OTP email.");
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<String> verifyOTP(@RequestParam String email, @RequestParam String otp) {
+        try {
+            boolean result = authenticationService.verifyOTPActiveAccount(email, otp); // Gọi service xác thực OTP
+            if (result) {
+                return ResponseEntity.ok("OTP verified successfully");
+            } else {
+                return ResponseEntity.status(400).body("OTP verification failed");
+            }
+        } catch (AppException e) {
+            return ResponseEntity.status(404).body("User not found.");
         }
     }
 }

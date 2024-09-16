@@ -7,6 +7,7 @@ import com.product.globie.payload.response.AuthenticationResponse;
 import com.product.globie.payload.request.AuthenticationRequest;
 import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
+import jakarta.mail.MessagingException;
 
 import java.text.ParseException;
 
@@ -18,4 +19,8 @@ public interface AuthenticationService {
     IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException;
 
     void logout(LogoutRequest logoutRequest);
+
+    void sendOTPActiveAccount(String email) throws MessagingException;
+
+    boolean verifyOTPActiveAccount(String email, String otp);
 }
