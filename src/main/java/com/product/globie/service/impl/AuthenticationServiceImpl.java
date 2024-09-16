@@ -7,7 +7,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.product.globie.entity.User;
 import com.product.globie.entity.Role;
-import com.product.globie.entity.Token;
 import com.product.globie.exception.AppException;
 import com.product.globie.exception.ErrorCode;
 import com.product.globie.payload.request.IntrospectRequest;
@@ -17,7 +16,6 @@ import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
 import com.product.globie.repository.AccountRepository;
 import com.product.globie.repository.RoleRepository;
-import com.product.globie.repository.TokenRepository;
 import com.product.globie.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -43,8 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ModelMapper mapper;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    private TokenRepository tokenRepository;
+
 
     @Value("${app.jwt-secret}")
     private String SIGNER_KEY;
@@ -107,12 +104,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Date expirationInstant = new Date(
                 Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
         );
-        Token tokenE = new Token();
-        tokenE.setUser(user);
-        tokenE.setToken(token);
-        tokenE.setExpiryDate(expirationInstant);
-        tokenE.setTokenType("ACCESS");
-        tokenRepository.save(tokenE);
+
 
 
         return AuthenticationResponse.builder()
