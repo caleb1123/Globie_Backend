@@ -23,20 +23,21 @@ public class MailService {
         mailSender.send(message);
     }
 
-    public void sendOTPtoActiveAccount(String to, String otp,String fullname) throws MessagingException {
-        String subject = "OTP to active account - Globie";
+    public void sendOTPtoActiveAccount(String to, String otp, String fullname) throws MessagingException {
+        String subject = "OTP kích hoạt tài khoản - Globie";
         String body = "<html>" +
                 "<body>" +
-                "<h2 style=\"color: #0D6EFD;\">OTP code</h2>" +
-                "<p>Dear " +  fullname +",</p>" +
-                "<p>We received a request to active your account for the Globie account associated with this email address. If you did not request this change, you can ignore this email.</p>" +
-                "<p>To active your account, please use the following OTP code:</p>" +
+                "<h2 style=\"color: #0D6EFD;\">OTP kích hoạt tài khoản</h2>" +
+                "<p>Xin chào " + fullname + ",</p>" +
+                "<p>Chúng tôi đã nhận được yêu cầu kích hoạt tài khoản Globie của bạn liên kết với địa chỉ email này. Nếu bạn không yêu cầu thay đổi này, bạn có thể bỏ qua email này.</p>" +
+                "<p>Để kích hoạt tài khoản của bạn, vui lòng sử dụng mã OTP sau:</p>" +
                 "<h3 style=\"color: #0D6EFD;\">" + otp + "</h3>" +
-                "<p>This OTP code will expire in 15 minutes.</p>" +
-                "<p>Thank you for using Globie!</p>" +
-                "<p>Best regards,<br/>Globie</p>" +
+                "<p>Mã OTP này sẽ hết hạn sau 15 phút.</p>" +
+                "<p>Cảm ơn bạn đã đồng hành cùng Globie!</p>" +
+                "<p>Trân trọng,<br/>Globie</p>" +
                 "</body>" +
                 "</html>";
-        sendNewMail(to, subject, body,fullname);
+        sendNewMail(to, subject, body, fullname);
     }
+
 }
