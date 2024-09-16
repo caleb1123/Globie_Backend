@@ -33,11 +33,25 @@ public class MailService {
                 "<p>Để kích hoạt tài khoản của bạn, vui lòng sử dụng mã OTP sau:</p>" +
                 "<h3 style=\"color: #0D6EFD;\">" + otp + "</h3>" +
                 "<p>Mã OTP này sẽ hết hạn sau 15 phút.</p>" +
-                "<p>Cảm ơn bạn đã đồng hành cùng Globie!</p>" +
+                "<p>Cảm ơn bạn đã đồng hành cùng Globie !</p>" +
                 "<p>Trân trọng,<br/>Globie</p>" +
                 "</body>" +
                 "</html>";
         sendNewMail(to, subject, body, fullname);
     }
 
+    public void sendOTPtoChangePasswordAccount(String to, String otp, String fullname) throws MessagingException {
+        String subject = "OTP để đặt lại mật khẩu - Globie";
+        String body = "<html>" +
+                "<body>" +
+                "<h2 style=\"color: #0D6EFD;\">Mã OTP</h2>" +
+                "<p>Xin chào " + fullname + ",</p>" +
+                "<p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Sử dụng mã OTP dưới đây để đặt lại mật khẩu của bạn:</p>" +
+                "<h3 style=\"color: #0D6EFD;\">" + otp + "</h3>" +
+                "<p>Mã OTP này sẽ hết hạn sau 15 phút.</p>" +
+                "<p>Trân trọng,<br/>Globie</p>" +
+                "</body>" +
+                "</html>";
+        sendNewMail(to, subject, body, fullname);
+    }
 }

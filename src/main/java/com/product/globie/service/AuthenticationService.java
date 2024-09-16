@@ -23,4 +23,10 @@ public interface AuthenticationService {
     void sendOTPActiveAccount(String email) throws MessagingException;
 
     boolean verifyOTPActiveAccount(String email, String otp);
+
+    void sendOTPChangePassword(String email) throws MessagingException;
+
+    boolean verifyOTPChangePassword(String email, String otp);
+
+    void changePassword(String email, String password);
 }

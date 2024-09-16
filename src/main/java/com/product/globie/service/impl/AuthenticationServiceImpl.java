@@ -222,6 +222,52 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return false;
     }
 
+    @Override
+    public void sendOTPChangePassword(String email) throws MessagingException {
+        String otpCode = generateOTP();
+        var user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        // Tạo đối tượng OTP
+        OTPToken otp = OTPToken.builder()
+                .email(email)
+                .otp(otpCode)
+                .expiryDate(Instant.now().plus(15, ChronoUnit.MINUTES))  // OTP hết hạn sau 15 phút
+                .build();
+
+        // Lưu OTP vào database
+        otpRepository.save(otp);
+
+        // Gửi OTP tới email người dùng
+        emailService.sendOTPtoChangePasswordAccount(email, otpCode, user.getFullName());
+    }
+
+    @Override
+    public boolean verifyOTPChangePassword(String email, String otp) {
+        // Kiểm tra xem OTP có hợp lệ không
+        OTPToken otpToken = otpRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.OTP_NOT_FOUND));
+
+        if (otpToken.isExpired()) {
+            otpRepository.delete(otpToken);
+            throw new AppException(ErrorCode.OTP_EXPIRED);
+        }
+
+        if (otpToken.getOtp().equals(otp)) {
+            otpRepository.delete(otpToken);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void changePassword(String email, String password) {
+        // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setPassword(encodedPassword);
+        accountRepository.save(user);
+    }
+
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
