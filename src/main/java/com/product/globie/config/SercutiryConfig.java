@@ -27,6 +27,8 @@ public class SercutiryConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         String[] publicEndpoints = new String[]{
                 apiVersion + "/authen/**",
+                "/swagger-ui/**",  // Thêm endpoint Swagger UI
+                "/v3/api-docs/**"   // Thêm endpoint API docs
         };
         httpSecurity.authorizeHttpRequests(request -> request
                 .requestMatchers(HttpMethod.POST, publicEndpoints).permitAll()
