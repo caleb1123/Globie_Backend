@@ -33,7 +33,7 @@ public class MailService {
                 "<p>To active your account, please use the following OTP code:</p>" +
                 "<h3 style=\"color: #0D6EFD;\">" + otp + "</h3>" +
                 "<p>This OTP code will expire in 15 minutes.</p>" +
-                "<p>Thank you for using Koi Veterinary Service!</p>" +
+                "<p>Thank you for using Globie!</p>" +
                 "<p>Best regards,<br/>Globie</p>" +
                 "</body>" +
                 "</html>";
