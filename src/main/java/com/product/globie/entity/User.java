@@ -46,14 +46,9 @@ public class User {
 
     @Column
     private String address;
+
     @Column
     private boolean status;
-
-    @Column
-    private Date created_Time;
-
-    @Column
-    private Date updated_Time;
 
     @ManyToOne
     @JoinColumn(name = "roleId")

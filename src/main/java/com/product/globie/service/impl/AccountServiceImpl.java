@@ -3,6 +3,7 @@ package com.product.globie.service.impl;
 import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
+import com.product.globie.payload.request.UpdateAccountRequest;
 import com.product.globie.payload.response.MyAccountResponse;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.repository.UserRepository;
@@ -48,10 +49,19 @@ public class AccountServiceImpl implements AccountService {
         return modelMapper.map(savedUser, AccountDTO.class);
     }
 
-
     @Override
-    public User updateAccount(User user) {
-        return null;
+    public AccountDTO updateAccount(UpdateAccountRequest user, String username) {
+        User updatedUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + username));;
+        updatedUser.setFullName(user.getFullName());
+        updatedUser.setPhone(user.getPhone());
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setAddress(user.getAddress());;
+        updatedUser.setAvatar(user.getAvatar());
+        updatedUser.setDob(user.getDob());
+        updatedUser.setSex(user.getSex());
+        User savedUser = userRepository.save(updatedUser);
+        return modelMapper.map(savedUser, AccountDTO.class);
     }
 
     @Override

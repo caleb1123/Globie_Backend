@@ -2,6 +2,7 @@ package com.product.globie.controller;
 
 import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
+import com.product.globie.payload.request.UpdateAccountRequest;
 import com.product.globie.payload.response.ApiResponse;
 import com.product.globie.payload.response.MyAccountResponse;
 import com.product.globie.service.AccountService;
@@ -71,6 +72,17 @@ public class AccountController {
                 .code(HttpStatus.OK.value())
                 .message("Account successfully deleted")
                 .data("Account successfully deleted")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/{username}")
+    public ResponseEntity<ApiResponse<AccountDTO>> updateAccount(@RequestBody UpdateAccountRequest accountDTO, @PathVariable String username) {
+        AccountDTO user = accountService.updateAccount(accountDTO, username);
+        ApiResponse<AccountDTO> response = ApiResponse.<AccountDTO>builder()
+                .code(HttpStatus.OK.value())
+                .message("Account successfully updated")
+                .data(user)
                 .build();
         return ResponseEntity.ok(response);
     }
