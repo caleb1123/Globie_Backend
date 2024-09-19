@@ -76,6 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 ))
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
+                .claim("active",user.isStatus())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

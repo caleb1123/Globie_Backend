@@ -30,6 +30,7 @@ public class SercutiryConfig {
                 "/swagger-ui/**",  // Thêm endpoint Swagger UI
                 "/v3/api-docs/**",
                 apiVersion + "/product/all",// Thêm endpoint API docs
+                apiVersion + "/account/**"
         };
         httpSecurity.authorizeHttpRequests(request -> request
                 .requestMatchers(HttpMethod.POST, publicEndpoints).permitAll()
