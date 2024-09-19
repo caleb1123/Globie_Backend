@@ -3,6 +3,7 @@ package com.product.globie.controller;
 import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
 import com.product.globie.payload.response.ApiResponse;
+import com.product.globie.payload.response.MyAccountResponse;
 import com.product.globie.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,27 @@ public class AccountController {
                 .data(user)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/my-account")
+    public ResponseEntity<ApiResponse<MyAccountResponse>> myAccount() {
+        MyAccountResponse user = accountService.myAccount();
+        ApiResponse<MyAccountResponse> response = ApiResponse.<MyAccountResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched account")
+                .data(user)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/{username}")
+    public ResponseEntity<ApiResponse<String>> deleteAccount(@PathVariable String username) {
+        accountService.deleteAccount(username);
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Account successfully deleted")
+                .data("Account successfully deleted")
+                .build();
+        return ResponseEntity.ok(response);
     }
 }

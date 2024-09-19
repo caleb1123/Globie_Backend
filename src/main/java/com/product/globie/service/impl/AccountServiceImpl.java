@@ -3,11 +3,13 @@ package com.product.globie.service.impl;
 import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
+import com.product.globie.payload.response.MyAccountResponse;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.repository.UserRepository;
 import com.product.globie.service.AccountService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,8 +55,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount(int id) {
-
+    public void deleteAccount(String username) {
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + username));
+        userRepository.delete(user);
     }
 
     @Override
@@ -72,5 +76,14 @@ public class AccountServiceImpl implements AccountService {
         return users.stream()
                 .map(user -> modelMapper.map(user, AccountDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public MyAccountResponse myAccount() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + name));
+        return modelMapper.map(user, MyAccountResponse.class);
     }
 }
