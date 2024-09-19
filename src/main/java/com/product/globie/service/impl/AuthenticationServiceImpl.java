@@ -15,7 +15,7 @@ import com.product.globie.payload.response.AuthenticationResponse;
 import com.product.globie.payload.request.AuthenticationRequest;
 import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
-import com.product.globie.repository.AccountRepository;
+import com.product.globie.repository.UserRepository;
 import com.product.globie.repository.OTPRepository;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.service.AuthenticationService;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
     @Autowired
     private final ModelMapper mapper;
     @Autowired
@@ -101,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse login(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Optional<User> optionalUser = accountRepository
+        Optional<User> optionalUser = userRepository
                 .findAccountByUserNameOrEmailOrPhone(request.getUserName(), request.getUserName(), request.getUserName());
         User user = optionalUser.orElseThrow(() -> new AppException(ErrorCode.UNABLE_TO_LOGIN));
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -122,17 +122,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse register(SignUpRequest request) {
-        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.EMAIL_TAKEN);
         }
 
         // Kiểm tra xem số điện thoại đã tồn tại chưa
-        if (accountRepository.findByPhone(request.getPhone()).isPresent()) {
+        if (userRepository.findByPhone(request.getPhone()).isPresent()) {
             throw new AppException(ErrorCode.PHONE_TAKEN);
         }
 
         // Kiểm tra xem tên người dùng đã tồn tại chưa
-        if (accountRepository.findByUserName(request.getUserName()).isPresent()) {
+        if (userRepository.findByUserName(request.getUserName()).isPresent()) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -144,7 +144,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         user.setRole(userRole);
         user.setStatus(false);
-        accountRepository.save(user);
+        userRepository.save(user);
         return AuthenticationResponse.builder()
                 .token(generateToken(user))
                 .authenticated(true)
@@ -186,7 +186,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendOTPActiveAccount(String email) throws MessagingException {
         String otpCode = generateOTP();
-        var user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         // Tạo đối tượng OTP
         OTPToken otp = OTPToken.builder()
                 .email(email)
@@ -213,9 +213,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         if (otpToken.getOtp().equals(otp)) {
             // Cập nhật trạng thái tài khoản
-            User user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
             user.setStatus(true);
-            accountRepository.save(user);
+            userRepository.save(user);
             otpRepository.delete(otpToken);
             return true;
         }
@@ -225,7 +225,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendOTPChangePassword(String email) throws MessagingException {
         String otpCode = generateOTP();
-        var user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         // Tạo đối tượng OTP
         OTPToken otp = OTPToken.builder()
                 .email(email)
@@ -263,9 +263,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String encodedPassword = passwordEncoder.encode(password);
-        User user = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setPassword(encodedPassword);
-        accountRepository.save(user);
+        userRepository.save(user);
     }
 
 
