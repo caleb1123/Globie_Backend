@@ -23,6 +23,8 @@ import java.text.ParseException;
 @RestController
 @RequestMapping("${api.version}/authen")
 @Slf4j
+@CrossOrigin("http://localhost:3000")
+
 public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
