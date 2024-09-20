@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/product")
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 public class ProductController {
     @Autowired
     ProductService productService;
@@ -23,6 +24,24 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<List<ProductDTO>> getAllProduct() {
         List<ProductDTO> productDTOList = productService.getAllProduct();
+        return ResponseEntity.ok(productDTOList);
+    }
+
+    @GetMapping("/all/true")
+    public ResponseEntity<List<ProductDTO>> getAllProductStatusTrue() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusTrue();
+        return ResponseEntity.ok(productDTOList);
+    }
+
+    @GetMapping("/all/false")
+    public ResponseEntity<List<ProductDTO>> getAllProductStatusFalse() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusflase();
+        return ResponseEntity.ok(productDTOList);
+    }
+
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<ProductDTO>> getProductByUserId(@PathVariable int userId) {
+        List<ProductDTO> productDTOList = productService.getProductByUser(userId);
         return ResponseEntity.ok(productDTOList);
     }
 

@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/account")
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 public class AccountController {
     @Autowired
     private AccountService accountService;

@@ -9,6 +9,12 @@ import java.util.List;
 public interface ProductService {
     List<ProductDTO> getAllProduct();
 
+    List<ProductDTO> getProductByUser(int uId);
+
+    List<ProductDTO> getAllProductStatusTrue();
+
+    List<ProductDTO> getAllProductStatusflase();
+
     ProductDTO createProduct(ProductRequest productRequest);
 
     void deleteProduct(int pId);
@@ -16,4 +22,6 @@ public interface ProductService {
     ProductDTO updateProduct(ProductRequest productRequest, int pId);
 
     void updateStatusProduct(int pId);
+
+
 }
