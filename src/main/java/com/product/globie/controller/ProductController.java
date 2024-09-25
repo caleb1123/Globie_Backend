@@ -99,9 +99,9 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable int id) {
         productService.deleteProduct(id);
-        ApiResponse<ProductDTO> response = ApiResponse.<ProductDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully deleted product")
                 .build();
@@ -120,9 +120,9 @@ public class ProductController {
     }
 
     @PutMapping("/update_status/{id}")
-    public ResponseEntity<ApiResponse<?>> UpdateStatusProduct(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> UpdateStatusProduct(@PathVariable int id) {
         productService.updateStatusProduct(id);
-        ApiResponse<ProductDTO> response = ApiResponse.<ProductDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated product status")
                 .build();

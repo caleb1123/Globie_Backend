@@ -101,9 +101,9 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<?>> deletePost(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable int id) {
         postService.deletePost(id);
-        ApiResponse<PostDTO> response = ApiResponse.<PostDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully deleted post")
                 .build();
@@ -122,9 +122,9 @@ public class PostController {
     }
 
     @PutMapping("/update_status/{id}")
-    public ResponseEntity<ApiResponse<?>> UpdateStatusPost(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> UpdateStatusPost(@PathVariable int id) {
         postService.updateStatusPost(id);
-        ApiResponse<PostDTO> response = ApiResponse.<PostDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated post status")
                 .build();

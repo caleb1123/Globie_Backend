@@ -24,9 +24,6 @@ public class Comment {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "rating", nullable = false)
-    private Integer rating;
-
     @Column(name = "created_time")
     private Date createdTime;
 
