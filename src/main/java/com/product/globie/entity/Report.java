@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table(name = "Report")
@@ -23,13 +24,13 @@ public class Report {
     private String message;
 
     @Column(name = "status")
-    private String status;
+    private boolean status;
 
     @Column(name = "created_time")
-    private String createdTime;
+    private Date createdTime;
 
     @Column(name = "updated_time")
-    private String updatedTime;
+    private Date updatedTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

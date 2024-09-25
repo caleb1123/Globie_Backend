@@ -5,7 +5,6 @@ import com.product.globie.entity.Product;
 import com.product.globie.entity.ProductCategory;
 import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.request.CreateProductRequest;
-import com.product.globie.payload.request.UpdatePostRequest;
 import com.product.globie.payload.request.UpdateProductRequest;
 import com.product.globie.repository.ProductCategoryRepository;
 import com.product.globie.repository.ProductRepository;

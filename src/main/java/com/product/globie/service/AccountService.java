@@ -16,4 +16,5 @@ public interface AccountService {
     List<AccountDTO> getAllAccount();
 
     MyAccountResponse myAccount();
+    void updateStatusUserToFalse(int uId);
 }

@@ -54,4 +54,19 @@ public class MailService {
                 "</html>";
         sendNewMail(to, subject, body, fullname);
     }
+
+    public void SendEmailBannedStatusMember(String to, String fullname) throws MessagingException {
+        String subject = "Cấm khỏi nền tảng - Globie";
+        String body = "<html>" +
+                "<body>" +
+                "<h2 style=\"color: #0D6EFD;\">Cấm Người Dùng</h2>" +
+                "<p>Xin chào " + fullname + ",</p>" +
+                "<p>Sau khi chúng tôi nhận được nhiều đơn khiếu nại về các sản phẩm của bạn trên nền tảng của chúng tôi.</p>" +
+                "<p>Chúng tôi rất tiếc phải thông báo với bạn rằng bạn đã bị cấm sử dụng nền tảng Globie.</p>" +
+                "<p>Nếu bạn có bất kỳ phản hồi nào, vui lòng trả lời mail này!</p>" +
+                "<p>Trân trọng,<br/>Globie</p>" +
+                "</body>" +
+                "</html>";
+        sendNewMail(to, subject, body, fullname);
+    }
 }
