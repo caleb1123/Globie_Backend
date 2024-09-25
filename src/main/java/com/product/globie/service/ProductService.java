@@ -23,5 +23,9 @@ public interface ProductService {
 
     void updateStatusProduct(int pId);
 
+    ProductDTO getProductDetail(int pId);
+
+    List<ProductDTO> getProductByCategory(int cId);
+
 
 }

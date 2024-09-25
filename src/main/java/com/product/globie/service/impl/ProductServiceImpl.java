@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     Util util;
 
     @Autowired
-    private ModelMapper mapper;
+    ModelMapper mapper;
 
 
 
@@ -67,7 +67,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getProductByUser(int uId) {
         List<Product> products = productRepository.findProductByUser(uId);
-
+        if(products.isEmpty()){
+            throw new RuntimeException("There are no products of this User Id: " + uId);
+        }
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
@@ -148,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductCategory productCategory = productCategoryRepository
                 .findById(productRequest.getProductCategoryId())
-                .orElseThrow(() -> new RuntimeException("ProductCategory not found"));
+                .orElseThrow(() -> new RuntimeException("ProductCategory not found with Id: " + productRequest.getProductCategoryId()));
         product.setProductCategory(productCategory);
 
         Product savedProduct = productRepository.save(product);
@@ -172,17 +174,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(int pId) {
         Product product = productRepository.findById(pId)
-                .orElseThrow(() -> new RuntimeException("Product with Id not Found!"));
-        product.setStatus(false);
-        product.setUpdatedTime(new Date());
-        productRepository.save(product);
+                .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
+
+        productRepository.delete(product);
     }
 
     @Override
     public ProductDTO updateProduct(ProductRequest productRequest, int pId) {
 
         Product product = productRepository.findById(pId)
-                .orElseThrow(() -> new RuntimeException("Product with Id not Found!"));
+                .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());
         product.setBrand(productRequest.getBrand());
@@ -193,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductCategory productCategory = productCategoryRepository
                 .findById(productRequest.getProductCategoryId())
-                .orElseThrow(() -> new RuntimeException("ProductCategory not found"));
+                .orElseThrow(() -> new RuntimeException("ProductCategory not found with Id: " + productRequest.getProductCategoryId()));
         product.setProductCategory(productCategory);
 
         Product savedProduct = productRepository.save(product);
@@ -217,9 +218,41 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateStatusProduct(int pId) {
         Product product = productRepository.findById(pId)
-                .orElseThrow(() -> new RuntimeException("Product with Id not Found!"));
-        product.setStatus(true);
+                .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
+        product.setStatus(!product.isStatus());
         product.setUpdatedTime(new Date());
         productRepository.save(product);
     }
+
+    @Override
+    public ProductDTO getProductDetail(int pId) {
+        Product product = productRepository.findById(pId)
+                .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
+
+        return mapper.map(product, ProductDTO.class);
+    }
+
+    @Override
+    public List<ProductDTO> getProductByCategory(int cId) {
+        List<Product> products = productRepository.findProductByProductCategory(cId);
+
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUserId(product.getUser().getUserId());
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
+
 }

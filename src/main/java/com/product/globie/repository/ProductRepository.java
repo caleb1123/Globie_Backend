@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "SELECT * from product WHERE user_id = :uId", nativeQuery = true)
     List<Product> findProductByUser(@Param("uId") int uId);
 
+    @Query("SELECT p FROM Product p WHERE p.productCategory.productCategoryId = :cId")
+    List<Product> findProductByProductCategory(@Param("cId") int cId);
 }
