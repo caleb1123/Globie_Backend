@@ -39,7 +39,9 @@ public class SercutiryConfig {
                 apiVersion + "/product/**",
                 apiVersion + "/account/**",
                 apiVersion + "/product_category/**",
-                apiVersion + "/post/**"
+                apiVersion + "/post/**",
+                apiVersion + "/report/**"
+
         };
 
 //        httpSecurity

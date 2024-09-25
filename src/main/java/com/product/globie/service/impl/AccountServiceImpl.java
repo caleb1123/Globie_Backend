@@ -96,4 +96,12 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + name));
         return modelMapper.map(user, MyAccountResponse.class);
     }
+
+    @Override
+    public void updateStatusUserToFalse(int uId) {
+        User user = userRepository.findById(uId)
+                .orElseThrow(() -> new RuntimeException("User not found with Id: " + uId));
+        user.setStatus(false);
+        userRepository.save(user);
+    }
 }
