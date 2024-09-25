@@ -33,25 +33,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategoryDTO> getProductCategoryStatusTrue() {
-        List<ProductCategory> productCategories = productCategoryRepository.findAll();
-
-        return productCategories.stream()
-                .filter(ProductCategory:: isStatus)
-                .map(category -> mapper.map(category, ProductCategoryDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductCategoryDTO> getProductCategoryStatusFalse() {
-        List<ProductCategory> productCategories = productCategoryRepository.findAll();
-
-        return productCategories.stream()
-                .filter(ProductCategory -> !ProductCategory.isStatus())
-                .map(category -> mapper.map(category, ProductCategoryDTO.class))
-                .collect(Collectors.toList());    }
-
-    @Override
     public ProductCategoryDTO createProductCategory(ProductCategoryRequest productCategoryRequest) {
         ProductCategory productCategory = new ProductCategory();
         productCategory.setCategoryName(productCategoryRequest.getCategoryName());
@@ -63,18 +44,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return mapper.map(productCategory, ProductCategoryDTO.class);
     }
 
-    @Override
-    public ProductCategoryDTO updateProductCategory(ProductCategoryRequest productCategoryRequest, int id) {
-        ProductCategory productCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Category not Found with Id: " + id));
-
-        productCategory.setCategoryName(productCategoryRequest.getCategoryName());
-        productCategory.setDescription(productCategoryRequest.getDescription());
-
-        productCategoryRepository.save(productCategory);
-
-        return mapper.map(productCategory, ProductCategoryDTO.class);
-    }
 
     @Override
     public void deleteProductCategory(int id) {
@@ -84,15 +53,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         productCategoryRepository.delete(productCategory);
     }
 
-    @Override
-    public void updateStatusProductCategory(int id) {
-        ProductCategory productCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Category not Found with Id: " + id));
 
-        productCategory.setStatus(!productCategory.isStatus());
-
-        productCategoryRepository.save(productCategory);
-    }
 
 
 }

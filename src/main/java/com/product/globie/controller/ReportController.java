@@ -81,9 +81,9 @@ public class ReportController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteReport(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> deleteReport(@PathVariable int id) {
         reportService.deleteReport(id);
-        ApiResponse<ReportDTO> response = ApiResponse.<ReportDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully deleted report")
                 .build();
@@ -91,9 +91,9 @@ public class ReportController {
     }
 
     @PutMapping("/update_status/{id}")
-    public ResponseEntity<ApiResponse<?>> UpdateStatusReport(@PathVariable int id) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> UpdateStatusReport(@PathVariable int id) throws MessagingException {
         reportService.updateStatusReport(id);
-        ApiResponse<ReportDTO> response = ApiResponse.<ReportDTO>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated report status")
                 .build();

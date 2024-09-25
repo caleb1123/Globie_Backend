@@ -40,7 +40,11 @@ public class SercutiryConfig {
                 apiVersion + "/account/**",
                 apiVersion + "/product_category/**",
                 apiVersion + "/post/**",
-                apiVersion + "/report/**"
+                apiVersion + "/report/**",
+                apiVersion + "/bookmark/**",
+                apiVersion + "/comment/**",
+                apiVersion + "/post_category/**"
+
 
         };
 
