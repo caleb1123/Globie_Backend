@@ -36,9 +36,10 @@ public class SercutiryConfig {
                 apiVersion + "/authen/**",
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
-                apiVersion + "/product/all",
+                apiVersion + "/product/**",
                 apiVersion + "/account/**",
-                apiVersion + "/product_category/all",
+                apiVersion + "/product_category/**",
+                apiVersion + "/post/**"
         };
 
 //        httpSecurity

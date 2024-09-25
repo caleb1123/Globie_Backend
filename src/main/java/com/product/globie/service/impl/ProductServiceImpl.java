@@ -3,10 +3,10 @@ package com.product.globie.service.impl;
 import com.product.globie.config.Util;
 import com.product.globie.entity.Product;
 import com.product.globie.entity.ProductCategory;
-import com.product.globie.entity.User;
-import com.product.globie.exception.AppException;
 import com.product.globie.payload.DTO.ProductDTO;
-import com.product.globie.payload.request.ProductRequest;
+import com.product.globie.payload.request.CreateProductRequest;
+import com.product.globie.payload.request.UpdatePostRequest;
+import com.product.globie.payload.request.UpdateProductRequest;
 import com.product.globie.repository.ProductCategoryRepository;
 import com.product.globie.repository.ProductRepository;
 import com.product.globie.repository.UserRepository;
@@ -15,11 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductStatusflase() {
+    public List<ProductDTO> getAllProductStatusFalse() {
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
@@ -136,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductDTO createProduct(ProductRequest productRequest) {
+    public ProductDTO createProduct(CreateProductRequest productRequest) {
         Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());
@@ -155,16 +152,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductId(savedProduct.getProductId());
-        productDTO.setProductName(savedProduct.getProductName());
-        productDTO.setDescription(savedProduct.getDescription());
-        productDTO.setBrand(savedProduct.getBrand());
-        productDTO.setOrigin(savedProduct.getOrigin());
-        productDTO.setPrice(savedProduct.getPrice());
-        productDTO.setQuantity(savedProduct.getQuantity());
-        productDTO.setCreatedTime(savedProduct.getCreatedTime());
-        productDTO.setStatus(savedProduct.isStatus());
+        ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
         productDTO.setProductCategoryId(savedProduct.getProductCategory().getProductCategoryId());
         productDTO.setUserId(savedProduct.getUser().getUserId());
 
@@ -180,7 +168,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductRequest productRequest, int pId) {
+    public ProductDTO updateProduct(UpdateProductRequest productRequest, int pId) {
 
         Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
@@ -192,23 +180,9 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(productRequest.getQuantity());
         product.setUpdatedTime(new Date());
 
-        ProductCategory productCategory = productCategoryRepository
-                .findById(productRequest.getProductCategoryId())
-                .orElseThrow(() -> new RuntimeException("ProductCategory not found with Id: " + productRequest.getProductCategoryId()));
-        product.setProductCategory(productCategory);
-
         Product savedProduct = productRepository.save(product);
 
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductId(savedProduct.getProductId());
-        productDTO.setProductName(savedProduct.getProductName());
-        productDTO.setDescription(savedProduct.getDescription());
-        productDTO.setBrand(savedProduct.getBrand());
-        productDTO.setOrigin(savedProduct.getOrigin());
-        productDTO.setPrice(savedProduct.getPrice());
-        productDTO.setQuantity(savedProduct.getQuantity());
-        productDTO.setUpdatedTime(savedProduct.getUpdatedTime());
-        productDTO.setStatus(savedProduct.isStatus());
+        ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
         productDTO.setProductCategoryId(savedProduct.getProductCategory().getProductCategoryId());
         productDTO.setUserId(savedProduct.getUser().getUserId());
 
@@ -228,14 +202,19 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductDetail(int pId) {
         Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
+        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+        productDTO.setUserId(product.getUser().getUserId());
 
-        return mapper.map(product, ProductDTO.class);
+        return productDTO;
     }
 
     @Override
     public List<ProductDTO> getProductByCategory(int cId) {
         List<Product> products = productRepository.findProductByProductCategory(cId);
-
+        if(products.isEmpty()){
+            throw new RuntimeException("There are no products of this Category Id: " + cId);
+        }
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);

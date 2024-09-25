@@ -1,17 +1,14 @@
 package com.product.globie.controller;
 
-import com.product.globie.entity.Product;
-import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.DTO.ProductDTO;
-import com.product.globie.payload.request.ProductRequest;
+import com.product.globie.payload.request.CreateProductRequest;
+import com.product.globie.payload.request.UpdateProductRequest;
 import com.product.globie.payload.response.ApiResponse;
-import com.product.globie.payload.response.ProductResponse;
 import com.product.globie.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +45,7 @@ public class ProductController {
 
     @GetMapping("/all/false")
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusFalse() {
-        List<ProductDTO> productDTOList = productService.getAllProductStatusflase();
+        List<ProductDTO> productDTOList = productService.getAllProductStatusFalse();
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched product")
@@ -57,7 +54,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/{userId}")
+    @GetMapping("/all_of_user/{userId}")
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByUserId(@PathVariable int userId) {
         List<ProductDTO> productDTOList = productService.getProductByUser(userId);
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
@@ -91,7 +88,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@RequestBody CreateProductRequest productRequest) {
         ProductDTO productDTO = productService.createProduct(productRequest);
         ApiResponse<ProductDTO> response = ApiResponse.<ProductDTO>builder()
                 .code(HttpStatus.CREATED.value())
@@ -112,7 +109,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<ProductDTO>> UpdateProduct(@RequestBody ProductRequest productRequest, @PathVariable int id) {
+    public ResponseEntity<ApiResponse<ProductDTO>> UpdateProduct(@RequestBody UpdateProductRequest productRequest, @PathVariable int id) {
         ProductDTO productDTO = productService.updateProduct(productRequest, id);
         ApiResponse<ProductDTO> response = ApiResponse.<ProductDTO>builder()
                 .code(HttpStatus.OK.value())
@@ -129,6 +126,7 @@ public class ProductController {
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated product status")
                 .build();
-        return ResponseEntity.ok(response);    }
+        return ResponseEntity.ok(response);
+    }
 
 }
