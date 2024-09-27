@@ -24,7 +24,7 @@ public class Report {
     private String message;
 
     @Column(name = "status")
-    private boolean status;
+    private String status;
 
     @Column(name = "created_time")
     private Date createdTime;
