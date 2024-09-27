@@ -2,6 +2,7 @@ package com.product.globie.service.impl;
 
 import com.product.globie.config.Util;
 import com.product.globie.entity.Product;
+import com.product.globie.entity.EReportStatus;
 import com.product.globie.entity.Report;
 import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.PostDTO;
@@ -70,11 +71,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportDTO> getAllReportStatusTrue() {
+    public List<ReportDTO> getAllReportStatusApproved() {
         List<Report> reports = reportRepository.findAll();
 
         List<ReportDTO> reportDTOS = reports.stream()
-                .filter(Report :: isStatus)
+                .filter(Report -> Report.getStatus().equals("Approved"))
                 .map(report -> {
                     ReportDTO reportDTO = mapper.map(report, ReportDTO.class);
 
@@ -93,11 +94,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportDTO> getAllReportStatusFalse() {
+    public List<ReportDTO> getAllReportStatusRejected() {
         List<Report> reports = reportRepository.findAll();
 
         List<ReportDTO> reportDTOS = reports.stream()
-                .filter(Product -> !Product.isStatus())
+                .filter(Report -> Report.getStatus().equals("Rejected"))
                 .map(report -> {
                     ReportDTO reportDTO = mapper.map(report, ReportDTO.class);
 
@@ -112,13 +113,37 @@ public class ReportServiceImpl implements ReportService {
                 })
                 .collect(Collectors.toList());
 
-        return reportDTOS.isEmpty() ? null : reportDTOS;     }
+        return reportDTOS.isEmpty() ? null : reportDTOS;
+    }
+
+    @Override
+    public List<ReportDTO> getAllReportStatusProcessing() {
+        List<Report> reports = reportRepository.findAll();
+
+        List<ReportDTO> reportDTOS = reports.stream()
+                .filter(Report -> Report.getStatus().equals("Processing"))
+                .map(report -> {
+                    ReportDTO reportDTO = mapper.map(report, ReportDTO.class);
+
+                    if (report.getProduct() != null) {
+                        reportDTO.setProductId(report.getProduct().getProductId());
+                    }
+                    if (report.getUser() != null) {
+                        reportDTO.setUserId(report.getUser().getUserId());
+                    }
+
+                    return reportDTO;
+                })
+                .collect(Collectors.toList());
+
+        return reportDTOS.isEmpty() ? null : reportDTOS;
+    }
 
     @Override
     public ReportDTO createReport(CreateReportRequest reportRequest) {
         Report report = new Report();
         report.setMessage(reportRequest.getMessage());
-        report.setStatus(false);
+        report.setStatus(EReportStatus.Processing.name());
         report.setCreatedTime(new Date());
         report.setUser(util.getUserFromAuthentication());
 
@@ -143,10 +168,10 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void updateStatusReport(int rId) throws MessagingException {
+    public void updateStatusReportApproved(int rId) throws MessagingException {
         Report report = reportRepository.findById(rId)
                 .orElseThrow(() -> new RuntimeException("Report not found with Id: " + rId));
-        report.setStatus(true);
+        report.setStatus(EReportStatus.Approved.name());
         report.setUpdatedTime(new Date());
 
         Product product = productRepository.findById(report.getProduct().getProductId())
@@ -160,7 +185,7 @@ public class ReportServiceImpl implements ReportService {
         int totalApprovedReportCount = 0;
 
         for (Product prod : products) {
-            int approvedReportCount = reportRepository.countReportByStatusTrue(prod.getProductId());
+            int approvedReportCount = reportRepository.countReportByStatusApproved(prod.getProductId());
             totalApprovedReportCount += approvedReportCount;
 
             if (totalApprovedReportCount >= 5) {
@@ -169,6 +194,16 @@ public class ReportServiceImpl implements ReportService {
                 break;
             }
         }
+        reportRepository.save(report);
+    }
+
+    @Override
+    public void updateStatusReportRejected(int rId) {
+        Report report = reportRepository.findById(rId)
+                .orElseThrow(() -> new RuntimeException("Report not found with Id: " + rId));
+        report.setStatus(EReportStatus.Rejected.name());
+        report.setUpdatedTime(new Date());
+
         reportRepository.save(report);
     }
 

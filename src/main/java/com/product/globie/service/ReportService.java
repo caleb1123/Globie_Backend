@@ -12,15 +12,20 @@ import java.util.List;
 public interface ReportService {
     List<ReportDTO> getAllReport();
 
-    List<ReportDTO> getAllReportStatusTrue();
+    List<ReportDTO> getAllReportStatusApproved();
 
-    List<ReportDTO> getAllReportStatusFalse();
+    List<ReportDTO> getAllReportStatusRejected();
+
+    List<ReportDTO> getAllReportStatusProcessing();
 
     ReportDTO createReport(CreateReportRequest reportRequest);
 
     void deleteReport(int rId);
 
-    void updateStatusReport(int rId) throws MessagingException;
+    void updateStatusReportApproved(int rId) throws MessagingException;
+
+    void updateStatusReportRejected(int rId);
+
 
     ReportDTO getReportDetail(int rId);
 }

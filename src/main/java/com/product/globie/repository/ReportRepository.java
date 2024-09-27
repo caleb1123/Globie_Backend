@@ -7,9 +7,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    @Query(value = "SELECT COUNT(*)" +
-            "FROM report" +
-           " WHERE status = 1" +
-            " AND product_id = :id", nativeQuery = true)
-    int countReportByStatusTrue(@Param("id") int id);
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM report " +
+            "WHERE status = 'Approved' " +
+            "AND product_id = :id", nativeQuery = true)
+    int countReportByStatusApproved(@Param("id") int id);
 }

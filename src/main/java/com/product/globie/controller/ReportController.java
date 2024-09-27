@@ -36,9 +36,9 @@ public class ReportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/true")
-    public ResponseEntity<ApiResponse<List<ReportDTO>>> getAllReportStatusTrue() {
-        List<ReportDTO> reportDTOS = reportService.getAllReportStatusTrue();
+    @GetMapping("/all/approved")
+    public ResponseEntity<ApiResponse<List<ReportDTO>>> getAllReportStatusApproved() {
+        List<ReportDTO> reportDTOS = reportService.getAllReportStatusApproved();
         ApiResponse<List<ReportDTO>> response = ApiResponse.<List<ReportDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched report")
@@ -47,9 +47,20 @@ public class ReportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/false")
-    public ResponseEntity<ApiResponse<List<ReportDTO>>> getAllReportStatusFalse() {
-        List<ReportDTO> reportDTOS = reportService.getAllReportStatusFalse();
+    @GetMapping("/all/rejected")
+    public ResponseEntity<ApiResponse<List<ReportDTO>>> getAllReportStatusRejected() {
+        List<ReportDTO> reportDTOS = reportService.getAllReportStatusRejected();
+        ApiResponse<List<ReportDTO>> response = ApiResponse.<List<ReportDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched report")
+                .data(reportDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all/processing")
+    public ResponseEntity<ApiResponse<List<ReportDTO>>> getAllReportStatusProcessing() {
+        List<ReportDTO> reportDTOS = reportService.getAllReportStatusProcessing();
         ApiResponse<List<ReportDTO>> response = ApiResponse.<List<ReportDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched report")
@@ -90,9 +101,19 @@ public class ReportController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update_status/{id}")
-    public ResponseEntity<ApiResponse<String>> UpdateStatusReport(@PathVariable int id) throws MessagingException {
-        reportService.updateStatusReport(id);
+    @PutMapping("/update_status_approved/{id}")
+    public ResponseEntity<ApiResponse<String>> UpdateStatusReportApproved(@PathVariable int id) throws MessagingException {
+        reportService.updateStatusReportApproved(id);
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully updated report status")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update_status_rejected/{id}")
+    public ResponseEntity<ApiResponse<String>> UpdateStatusReportRejected(@PathVariable int id) throws MessagingException {
+        reportService.updateStatusReportRejected(id);
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated report status")
