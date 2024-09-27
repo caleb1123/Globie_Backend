@@ -32,9 +32,9 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/true")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusTrue() {
-        List<ProductDTO> productDTOList = productService.getAllProductStatusTrue();
+    @GetMapping("/all/selling")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusSelling() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusSelling();
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched product")
@@ -43,9 +43,20 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/false")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusFalse() {
-        List<ProductDTO> productDTOList = productService.getAllProductStatusFalse();
+    @GetMapping("/all/sold")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusSold() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusSold();
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all/processing")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusProcessing() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusProcessing();
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched product")

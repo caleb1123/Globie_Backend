@@ -45,7 +45,7 @@ public class Product {
     private Date updatedTime;
 
     @Column
-    private boolean status;
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "productCategoryId")

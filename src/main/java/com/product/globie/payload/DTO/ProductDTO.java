@@ -20,7 +20,7 @@ public class ProductDTO {
     private int quantity;
     private Date createdTime;
     private Date updatedTime;
-    private boolean status;
+    private String status;
     private int productCategoryId;
     private int userId;
 }
