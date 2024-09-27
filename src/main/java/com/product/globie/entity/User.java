@@ -70,7 +70,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Collection<Transaction> transactions;
-
-    @OneToMany(mappedBy = "user")
-    private Collection<MemberHistory> memberHistories;
 }

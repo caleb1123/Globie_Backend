@@ -2,7 +2,10 @@ package com.product.globie.service.impl;
 
 import com.product.globie.config.Util;
 import com.product.globie.entity.Product;
+import com.product.globie.entity.EProductStatus;
+
 import com.product.globie.entity.ProductCategory;
+import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.request.CreateProductRequest;
 import com.product.globie.payload.request.UpdateProductRequest;
@@ -85,11 +88,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductStatusTrue() {
+    public List<ProductDTO> getAllProductStatusSelling() {
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
-                .filter(Product :: isStatus)
+                .filter(Product -> Product.getStatus().equals("Selling"))
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -108,11 +111,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductStatusFalse() {
+    public List<ProductDTO> getAllProductStatusSold() {
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
-                .filter(Product -> !Product.isStatus())
+                .filter(Product -> Product.getStatus().equals("Sold"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUserId(product.getUser().getUserId());
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
+    @Override
+    public List<ProductDTO> getAllProductStatusProcessing() {
+        List<Product> products = productRepository.findAll();
+
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(Product -> Product.getStatus().equals("Processing"))
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -134,6 +160,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO createProduct(CreateProductRequest productRequest) {
         Product product = new Product();
+
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());
         product.setBrand(productRequest.getBrand());
@@ -141,7 +168,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setQuantity(productRequest.getQuantity());
         product.setCreatedTime(new Date());
-        product.setStatus(false);
+        product.setStatus(EProductStatus.Processing.name());
         product.setUser(util.getUserFromAuthentication());
 
         ProductCategory productCategory = productCategoryRepository
@@ -192,7 +219,8 @@ public class ProductServiceImpl implements ProductService {
     public void updateStatusProduct(int pId) {
         Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
-        product.setStatus(!product.isStatus());
+
+        product.setStatus(EProductStatus.Selling.name());
         product.setUpdatedTime(new Date());
         productRepository.save(product);
     }

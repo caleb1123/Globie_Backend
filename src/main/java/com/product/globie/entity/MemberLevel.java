@@ -32,13 +32,10 @@ public class MemberLevel {
     @Column(nullable = false)
     private Integer durationInMonths;
 
-    @OneToMany(mappedBy = "memberLevel")
-    private Collection<MemberBenefit> memberBenefits;
+    @Column(nullable = false)
+    private boolean status;
 
     @OneToMany(mappedBy = "memberLevel")
     private Collection<UserMember> userMembers;
-
-    @OneToMany(mappedBy = "previousLevel")
-    private Collection<MemberHistory> previousMemberHistories;
 
 }

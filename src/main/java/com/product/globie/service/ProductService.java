@@ -12,9 +12,11 @@ public interface ProductService {
 
     List<ProductDTO> getProductByUser(int uId);
 
-    List<ProductDTO> getAllProductStatusTrue();
+    List<ProductDTO> getAllProductStatusSelling();
 
-    List<ProductDTO> getAllProductStatusFalse();
+    List<ProductDTO> getAllProductStatusSold();
+
+    List<ProductDTO> getAllProductStatusProcessing();
 
     ProductDTO createProduct(CreateProductRequest productRequest);
 
