@@ -25,6 +25,9 @@ public class UserMember {
     @Column
     private LocalDate memberEndDate;
 
+    @Column(nullable = false)
+    private boolean status;
+
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
