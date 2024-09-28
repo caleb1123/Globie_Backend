@@ -2,7 +2,7 @@ package com.product.globie.entity;
 
 public enum ERole {
     ADMIN,
-    MANAGER,
+    STOREKEEPER,
     STAFF,
     USER
 }

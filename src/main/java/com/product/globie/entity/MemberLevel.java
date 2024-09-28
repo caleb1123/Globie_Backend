@@ -32,9 +32,6 @@ public class MemberLevel {
     @Column(nullable = false)
     private Integer durationInMonths;
 
-    @Column(nullable = false)
-    private boolean status;
-
     @OneToMany(mappedBy = "memberLevel")
     private Collection<UserMember> userMembers;
 
