@@ -56,9 +56,9 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all_of_user/{userId}")
-    public ResponseEntity<ApiResponse<List<PostDTO>>> getPostByUserId(@PathVariable int userId) {
-        List<PostDTO> postDTOS = postService.getPostByUser(userId);
+    @GetMapping("/all_of_staff")
+    public ResponseEntity<ApiResponse<List<PostDTO>>> getPostByStaff() {
+        List<PostDTO> postDTOS = postService.getPostByStaff();
         ApiResponse<List<PostDTO>> response = ApiResponse.<List<PostDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched post")

@@ -15,4 +15,5 @@ public class UpdateProductRequest {
     String origin;
     double price;
     int quantity;
+    String warranty;
 }

@@ -16,13 +16,11 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 public class Attribute {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attribute_id")
     private int attributeId;
 
-    @Column(name = "attribute_name", nullable = false)
+    @Column(nullable = false)
     private String attributeName;
 
     @ManyToOne

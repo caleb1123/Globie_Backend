@@ -23,9 +23,9 @@ public class BookmarkController {
     BookMarkService bookMarkService;
 
 
-    @GetMapping("/all/{userId}")
-    public ResponseEntity<ApiResponse<List<BookMarkDTO>>> getAllCommentOfUser(@PathVariable int userId) {
-        List<BookMarkDTO> bookMarkDTOS = bookMarkService.getAllBookMarkOfUser(userId);
+    @GetMapping("/all_of_user")
+    public ResponseEntity<ApiResponse<List<BookMarkDTO>>> getAllBookMarkOfUser() {
+        List<BookMarkDTO> bookMarkDTOS = bookMarkService.getAllBookMarkOfUser();
         ApiResponse<List<BookMarkDTO>> response = ApiResponse.<List<BookMarkDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched Bookmark")
@@ -44,9 +44,9 @@ public class BookmarkController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteBookmark(@PathVariable int id) {
-        bookMarkService.deleteBookMark(id);
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<ApiResponse<String>> deleteBookmark(@PathVariable int productId) {
+        bookMarkService.deleteBookMark(productId);
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully deleted Bookmark")

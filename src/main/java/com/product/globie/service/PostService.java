@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostService {
     List<PostDTO> getAllPost();
 
-    List<PostDTO> getPostByUser(int uId);
+    List<PostDTO> getPostByStaff();
 
     List<PostDTO> getAllPostStatusTrue();
 

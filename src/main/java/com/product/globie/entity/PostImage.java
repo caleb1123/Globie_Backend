@@ -14,10 +14,13 @@ public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postImageId;
+
     @Column(nullable = false)
     private String imagePath;
+
     @Column
     private boolean status;
+
     @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;

@@ -21,7 +21,7 @@ public class Comment {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "nvarchar(500)")
     private String content;
 
     @Column(name = "created_time")

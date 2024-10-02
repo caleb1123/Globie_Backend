@@ -54,11 +54,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getPostByUser(int uId) {
-
-        List<Post> posts = postRepository.findPostByUser(uId);
+    public List<PostDTO> getPostByStaff() {
+        int userId = util.getUserFromAuthentication().getUserId();
+        List<Post> posts = postRepository.findPostByUser(userId);
         if(posts.isEmpty()){
-            throw new RuntimeException("There are no Posts of this User Id: " + uId);
+            throw new RuntimeException("There are no Posts of this User Id: " + userId);
         }
         List<PostDTO> postDTOS = posts.stream()
                 .map(post -> {

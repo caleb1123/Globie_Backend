@@ -18,6 +18,7 @@ public class ProductDTO {
     private String origin;
     private double price;
     private int quantity;
+    private String warranty;
     private Date createdTime;
     private Date updatedTime;
     private String status;
