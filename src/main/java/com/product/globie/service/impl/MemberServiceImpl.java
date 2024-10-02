@@ -119,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
             LocalDate endDate = userMember.getMemberEndDate();
             LocalDate today = LocalDate.now();
 
-            if (endDate != null && today.isAfter(endDate)) {
+            if (endDate != null && today.isAfter(endDate) && userMember.isStatus()) {
                 MemberLevel memberLevel = memberRepository.findById(userMember.getMemberLevel().getMemberLevelId())
                         .orElseThrow(() -> new RuntimeException("Member Level not found!"));
                 User user = userRepository.findById(userMember.getUser().getUserId())

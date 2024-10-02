@@ -23,7 +23,7 @@ public class Product {
     @Column(nullable = false)
     private String productName;
 
-    @Column
+    @Column(nullable = false, columnDefinition = "nvarchar(max)")
     private String description;
 
     @Column
@@ -37,6 +37,9 @@ public class Product {
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
+    private String warranty;
 
     @Column(name = "created_time")
     private Date createdTime;

@@ -10,7 +10,11 @@ import java.util.List;
 public interface ProductService {
     List<ProductDTO> getAllProduct();
 
-    List<ProductDTO> getProductByUser(int uId);
+    List<ProductDTO> getProductByUserStatusProcessing();
+
+    List<ProductDTO> getProductByUserStatusSelling();
+
+    List<ProductDTO> getProductByUserStatusSold();
 
     List<ProductDTO> getAllProductStatusSelling();
 

@@ -20,7 +20,7 @@ public class Report {
     @Column(name = "report_id")
     private int reportId;
 
-    @Column(name = "message", nullable = false)
+    @Column(name = "message", nullable = false, columnDefinition = "nvarchar(500)")
     private String message;
 
     @Column(name = "status")

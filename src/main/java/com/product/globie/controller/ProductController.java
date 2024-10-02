@@ -65,9 +65,31 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all_of_user/{userId}")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByUserId(@PathVariable int userId) {
-        List<ProductDTO> productDTOList = productService.getProductByUser(userId);
+    @GetMapping("/all_of_user_processing")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByUserStatusProcessing() {
+        List<ProductDTO> productDTOList = productService.getProductByUserStatusProcessing();
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_of_user_selling")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByUserStatusSelling() {
+        List<ProductDTO> productDTOList = productService.getProductByUserStatusSelling();
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_of_user_sold")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByUserStatusSold() {
+        List<ProductDTO> productDTOList = productService.getProductByUserStatusSold();
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched product")

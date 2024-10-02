@@ -21,7 +21,7 @@ public class Rate {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "nvarchar(1000)")
     private String description;
 
     @Column(name = "created_time")

@@ -31,7 +31,8 @@ public class BookMarkServiceImpl implements BookMarkService {
     ProductRepository productRepository;
 
     @Override
-    public List<BookMarkDTO> getAllBookMarkOfUser(int uId) {
+    public List<BookMarkDTO> getAllBookMarkOfUser() {
+        int uId = util.getUserFromAuthentication().getUserId();
         List<Bookmark> bookmarks = bookMarkRepository.getBookmarkByUser(uId);
 
         List<BookMarkDTO> bookMarkDTOS = bookmarks.stream()
@@ -66,8 +67,9 @@ public class BookMarkServiceImpl implements BookMarkService {
     }
 
     @Override
-    public void deleteBookMark(int bId) {
-        Bookmark bookmark = bookMarkRepository.findById(bId)
+    public void deleteBookMark(int pId) {
+        int uId = util.getUserFromAuthentication().getUserId();
+        Bookmark bookmark = bookMarkRepository.getBookmarkByUserAndProduct(uId, pId)
                 .orElseThrow(() -> new RuntimeException("Bookmark not found!"));
 
         bookMarkRepository.delete(bookmark);

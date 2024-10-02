@@ -25,7 +25,7 @@ public class Post {
     @Column(nullable = false)
     private String postTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "nvarchar(max)")
     private String postContent;
 
     @Column(name = "created_time")

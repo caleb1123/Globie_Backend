@@ -3,6 +3,7 @@ package com.product.globie.service.impl;
 import com.product.globie.config.Util;
 import com.product.globie.entity.Product;
 import com.product.globie.entity.EProductStatus;
+import com.product.globie.entity.ERole;
 
 import com.product.globie.entity.ProductCategory;
 import com.product.globie.entity.User;
@@ -62,14 +63,68 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS.isEmpty() ? null : productDTOS;
     }
 
-
     @Override
-    public List<ProductDTO> getProductByUser(int uId) {
+    public List<ProductDTO> getProductByUserStatusProcessing() {
+        int uId = util.getUserFromAuthentication().getUserId();
         List<Product> products = productRepository.findProductByUser(uId);
         if(products.isEmpty()){
             throw new RuntimeException("There are no products of this User Id: " + uId);
         }
         List<ProductDTO> productDTOS = products.stream()
+                .filter(Product -> Product.getStatus().equals("Processing"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUserId(product.getUser().getUserId());
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
+
+    @Override
+    public List<ProductDTO> getProductByUserStatusSelling() {
+        int uId = util.getUserFromAuthentication().getUserId();
+        List<Product> products = productRepository.findProductByUser(uId);
+        if(products.isEmpty()){
+            throw new RuntimeException("There are no products of this User Id: " + uId);
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(Product -> Product.getStatus().equals("Selling"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUserId(product.getUser().getUserId());
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByUserStatusSold() {
+        int uId = util.getUserFromAuthentication().getUserId();
+        List<Product> products = productRepository.findProductByUser(uId);
+        if(products.isEmpty()){
+            throw new RuntimeException("There are no products of this User Id: " + uId);
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(Product -> Product.getStatus().equals("Sold"))
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -89,6 +144,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProductStatusSelling() {
+        if(!util.getUserFromAuthentication().getRole().getRoleName().equals(ERole.STAFF)){
+            throw new RuntimeException("USER NOT ALLOWED!");
+        }
+
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
@@ -112,6 +171,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProductStatusSold() {
+        if(!util.getUserFromAuthentication().getRole().getRoleName().equals(ERole.STAFF)){
+            throw new RuntimeException("USER NOT ALLOWED!");
+        }
+
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
@@ -135,6 +198,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProductStatusProcessing() {
+        if(!util.getUserFromAuthentication().getRole().getRoleName().equals(ERole.STAFF)){
+            throw new RuntimeException("USER NOT ALLOWED!");
+        }
+
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
@@ -167,6 +234,7 @@ public class ProductServiceImpl implements ProductService {
         product.setOrigin(productRequest.getOrigin());
         product.setPrice(productRequest.getPrice());
         product.setQuantity(productRequest.getQuantity());
+        product.setWarranty(productRequest.getWarranty());
         product.setCreatedTime(new Date());
         product.setStatus(EProductStatus.Processing.name());
         product.setUser(util.getUserFromAuthentication());
@@ -204,6 +272,7 @@ public class ProductServiceImpl implements ProductService {
         product.setOrigin(productRequest.getOrigin());
         product.setPrice(productRequest.getPrice());
         product.setQuantity(productRequest.getQuantity());
+        product.setWarranty(productRequest.getWarranty());
         product.setUpdatedTime(new Date());
 
         Product savedProduct = productRepository.save(product);
@@ -259,6 +328,4 @@ public class ProductServiceImpl implements ProductService {
 
         return productDTOS.isEmpty() ? null : productDTOS;
     }
-
-
 }

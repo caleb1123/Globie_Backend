@@ -15,5 +15,6 @@ public class CreateProductRequest {
      String origin;
      double price;
      int quantity;
+     String warranty;
      int productCategoryId;
 }
