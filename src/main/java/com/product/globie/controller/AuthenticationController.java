@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessagingException;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -28,6 +32,10 @@ import java.text.ParseException;
 public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
+
+    @Autowired
+    private OAuth2AuthorizedClientService authorizedClientService;
+
 
     @PostMapping("/register")
     public ApiResponse<AuthenticationResponse> register(@RequestBody SignUpRequest request) {
@@ -168,5 +176,15 @@ public class AuthenticationController {
         } catch (AppException e) {
             return ResponseEntity.status(404).body("User not found.");
         }
+    }
+
+    @GetMapping("/auth/google")
+    public String loginWithGoogle(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient, OAuth2AuthenticationToken authentication) {
+        String userName = authentication.getPrincipal().getAttribute("name");
+        String userEmail = authentication.getPrincipal().getAttribute("email");
+
+        // Xử lý logic đăng nhập, ví dụ: lưu thông tin người dùng vào cơ sở dữ liệu
+
+        return String.format("User %s with email %s has logged in successfully!", userName, userEmail);
     }
 }
