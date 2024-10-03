@@ -22,7 +22,9 @@ public enum ErrorCode {
     PHONE_TAKEN(1013, "Phone number already in use", HttpStatus.BAD_REQUEST),
     UNABLE_TO_LOGIN(1014, "Login fail", HttpStatus.NOT_FOUND),
     OTP_NOT_FOUND(1015, "OTP not found", HttpStatus.NOT_FOUND),
-    OTP_EXPIRED(1016, "OTP expired", HttpStatus.BAD_REQUEST);
+    OTP_EXPIRED(1016, "OTP expired", HttpStatus.BAD_REQUEST),
+    ITEM_NOT_FOUND_OR_INVALID(1017, "Item not found or invalid", HttpStatus.NOT_FOUND),
+    INVALID_INPUT(1018, "Invalid input(1-5)", HttpStatus.BAD_REQUEST);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
