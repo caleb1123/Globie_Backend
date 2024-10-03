@@ -33,8 +33,8 @@ public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
 
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
+//    @Autowired
+//    private OAuth2AuthorizedClientService authorizedClientService;
 
 
     @PostMapping("/register")
@@ -178,13 +178,13 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/auth/google")
-    public String loginWithGoogle(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient, OAuth2AuthenticationToken authentication) {
-        String userName = authentication.getPrincipal().getAttribute("name");
-        String userEmail = authentication.getPrincipal().getAttribute("email");
-
-        // Xử lý logic đăng nhập, ví dụ: lưu thông tin người dùng vào cơ sở dữ liệu
-
-        return String.format("User %s with email %s has logged in successfully!", userName, userEmail);
-    }
+//    @GetMapping("/auth/google")
+//    public String loginWithGoogle(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient, OAuth2AuthenticationToken authentication) {
+//        String userName = authentication.getPrincipal().getAttribute("name");
+//        String userEmail = authentication.getPrincipal().getAttribute("email");
+//
+//        // Xử lý logic đăng nhập, ví dụ: lưu thông tin người dùng vào cơ sở dữ liệu
+//
+//        return String.format("User %s with email %s has logged in successfully!", userName, userEmail);
+//    }
 }
