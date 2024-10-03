@@ -1,10 +1,13 @@
 package com.product.globie.service;
 
 import com.product.globie.payload.DTO.ProductDTO;
+import com.product.globie.payload.DTO.ProductImageDTO;
 import com.product.globie.payload.request.CreateProductRequest;
 import com.product.globie.payload.request.UpdatePostRequest;
 import com.product.globie.payload.request.UpdateProductRequest;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -34,5 +37,12 @@ public interface ProductService {
 
     List<ProductDTO> getProductByCategory(int cId);
 
+    List<ProductImageDTO> uploadMultipleProductImages(MultipartFile[] multipartFiles, int productId) throws IOException;
+    List<ProductImageDTO> getAllImageByProduct(int productId);
 
+    List<ProductImageDTO> getAllImageByProductStatusTrue(int productId);
+
+    void deleteProductImage(String imageCode) throws IOException;
+
+    ProductImageDTO getProductImageByCode(String imageCode);
 }

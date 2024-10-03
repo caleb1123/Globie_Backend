@@ -1,25 +1,27 @@
 package com.product.globie.service.impl;
 
 import com.product.globie.config.Util;
-import com.product.globie.entity.Product;
-import com.product.globie.entity.EProductStatus;
-import com.product.globie.entity.ERole;
+import com.product.globie.entity.*;
 
-import com.product.globie.entity.ProductCategory;
-import com.product.globie.entity.User;
+import com.product.globie.payload.DTO.PostCategoryDTO;
 import com.product.globie.payload.DTO.ProductDTO;
+import com.product.globie.payload.DTO.ProductImageDTO;
 import com.product.globie.payload.request.CreateProductRequest;
 import com.product.globie.payload.request.UpdateProductRequest;
 import com.product.globie.repository.ProductCategoryRepository;
+import com.product.globie.repository.ProductImageRepository;
 import com.product.globie.repository.ProductRepository;
 import com.product.globie.repository.UserRepository;
 import com.product.globie.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +40,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ModelMapper mapper;
+
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    ProductImageRepository productImageRepository;
 
 
 
@@ -328,4 +336,140 @@ public class ProductServiceImpl implements ProductService {
 
         return productDTOS.isEmpty() ? null : productDTOS;
     }
+
+
+
+
+
+    @Override
+    public List<ProductImageDTO> uploadMultipleProductImages(MultipartFile[] multipartFiles, int productId) throws IOException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with Id: " + productId));
+
+        Integer imageCount = productImageRepository.countImageByProduct(productId);
+        if(imageCount == null) imageCount = 0;
+        if(imageCount >= 10) throw new RuntimeException("Maximum of 10 images already uploaded for this product.");
+
+        List<ProductImageDTO> uploadedImages = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            File file = convertMultiPartToFile(multipartFile);
+            Map uploadResult = cloudinaryService.uploadFile(file);
+
+            ProductImage productImage = new ProductImage();
+            productImage.setProduct(product);
+            productImage.setImagePath(uploadResult.get("url").toString());
+            productImage.setProductImageCode(uploadResult.get("public_id").toString());
+            productImage.setStatus(true);
+
+            ProductImage savedProductImage = productImageRepository.save(productImage);
+
+            ProductImageDTO productImageDTO = mapper.map(savedProductImage, ProductImageDTO.class);
+            productImageDTO.setProductId(savedProductImage.getProduct().getProductId());
+
+            uploadedImages.add(productImageDTO);
+        }
+
+        return uploadedImages;
+    }
+
+
+    @Override
+    public List<ProductImageDTO> getAllImageByProduct(int productId) {
+        List<ProductImage> productImages = productImageRepository.getProductImageByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Image not found with Product Id: " + productId));
+
+        List<ProductImageDTO> productImageDTOS = productImages.stream()
+                .map(image -> {
+                    ProductImageDTO productImageDTO = mapper.map(image, ProductImageDTO.class);
+
+                    if (image.getProduct() != null) {
+                        productImageDTO.setProductId(image.getProduct().getProductId());
+                    }
+
+                    return productImageDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productImageDTOS.isEmpty() ? null : productImageDTOS;
+    }
+
+    @Override
+    public List<ProductImageDTO> getAllImageByProductStatusTrue(int productId) {
+        List<ProductImage> productImages = productImageRepository.getProductImageByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Image not found with Product Id: " + productId));
+
+        List<ProductImageDTO> productImageDTOS = productImages.stream()
+                .filter(ProductImage :: isStatus)
+                .map(image -> {
+                    ProductImageDTO productImageDTO = mapper.map(image, ProductImageDTO.class);
+
+                    if (image.getProduct() != null) {
+                        productImageDTO.setProductId(image.getProduct().getProductId());
+                    }
+
+                    return productImageDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productImageDTOS.isEmpty() ? null : productImageDTOS;
+    }
+
+    @Override
+    public void deleteProductImage(String imageCode) throws IOException {
+        ProductImage productImage = productImageRepository.getProductImageByImageCode(imageCode)
+                .orElseThrow(() -> new RuntimeException("Image not found with Product Image Code: " + imageCode));
+
+        String publicId = extractPublicId(productImage.getImagePath());
+
+        Map result = cloudinaryService.deleteFile(publicId);
+        if ("ok".equals(result.get("result"))) {
+            productImage.setStatus(false);
+            productImageRepository.save(productImage);
+        } else {
+            throw new RuntimeException("Failed to delete image from Cloudinary: " + result);
+        }
+    }
+
+    private String extractPublicId(String imageUrl) {
+        // Kiểm tra định dạng URL
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            throw new IllegalArgumentException("Image URL cannot be null or empty");
+        }
+
+        // Ví dụ: https://res.cloudinary.com/demo/image/upload/v1234567890/public_id.jpg
+        // Trích xuất public_id "v1234567890/public_id"
+        int startIndex = imageUrl.lastIndexOf("/") + 1; // Vị trí bắt đầu của public_id
+        int endIndex = imageUrl.lastIndexOf("."); // Vị trí kết thúc trước đuôi file
+        if (startIndex < 0 || endIndex < 0 || startIndex >= endIndex) {
+            throw new RuntimeException("Invalid image URL format: " + imageUrl);
+        }
+        return imageUrl.substring(startIndex, endIndex); // Trả về public_id
+    }
+
+    @Override
+    public ProductImageDTO getProductImageByCode(String imageCode) {
+        ProductImage productImage = productImageRepository.getProductImageByImageCode(imageCode)
+                .orElseThrow(() -> new RuntimeException("Image not found with Product Image Code: " + imageCode));
+
+        ProductImageDTO productImageDTO = mapper.map(productImage, ProductImageDTO.class);
+        productImageDTO.setProductId(productImage.getProduct().getProductId());
+
+        return productImageDTO;
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
+
+
+
+
+
+
+
 }
