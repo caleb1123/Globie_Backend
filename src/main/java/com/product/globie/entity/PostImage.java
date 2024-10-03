@@ -21,6 +21,9 @@ public class PostImage {
     @Column
     private boolean status;
 
+    @Column
+    private String postImageCode;
+
     @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;

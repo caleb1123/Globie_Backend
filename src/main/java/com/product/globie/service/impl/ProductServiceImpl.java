@@ -337,10 +337,6 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS.isEmpty() ? null : productDTOS;
     }
 
-
-
-
-
     @Override
     public List<ProductImageDTO> uploadMultipleProductImages(MultipartFile[] multipartFiles, int productId) throws IOException {
         Product product = productRepository.findById(productId)
@@ -465,11 +461,4 @@ public class ProductServiceImpl implements ProductService {
         fos.close();
         return convFile;
     }
-
-
-
-
-
-
-
 }
