@@ -38,6 +38,7 @@ public interface ProductService {
     List<ProductDTO> getProductByCategory(int cId);
 
     List<ProductImageDTO> uploadMultipleProductImages(MultipartFile[] multipartFiles, int productId) throws IOException;
+
     List<ProductImageDTO> getAllImageByProduct(int productId);
 
     List<ProductImageDTO> getAllImageByProductStatusTrue(int productId);
