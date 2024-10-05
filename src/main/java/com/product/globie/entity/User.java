@@ -63,11 +63,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Collection<Post> posts;
 
-
-
     @OneToMany(mappedBy = "user")
     private Collection<Rate> rates;
 
     @OneToMany(mappedBy = "user")
     private Collection<Transaction> transactions;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<ShippingAddress> shippingAddresses;
 }

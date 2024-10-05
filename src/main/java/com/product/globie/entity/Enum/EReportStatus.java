@@ -1,4 +1,4 @@
-package com.product.globie.entity;
+package com.product.globie.entity.Enum;
 
 public enum EReportStatus {
     Rejected,

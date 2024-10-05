@@ -33,7 +33,7 @@ public class Payment {
     private Double paymentAmount;
 
     @Column(name = "status")
-    private boolean status;
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "order_code")
