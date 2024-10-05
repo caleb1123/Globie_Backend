@@ -18,7 +18,7 @@ public class OrderDetail {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private Integer amount;
 
     @ManyToOne

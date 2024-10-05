@@ -31,21 +31,19 @@ public class Order {
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
 
-    @Column(name = "total_transaction", nullable = false)
-    private Integer totalTransaction;
-
     @Column(name = "status")
-    private boolean status;
+    private String status;
 
-    @Column(name = "shipping_address")
-    private String shippingAddress;
-
-    @Column(name = "order_name")
-    private String orderName;
+    @Column
+    private String paymentMethodOrder;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "shipping_id", nullable = false)
+    private ShippingAddress shippingAddress;
 
     @OneToMany(mappedBy = "order")
     private Collection<OrderDetail> orderDetails;

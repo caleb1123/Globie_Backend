@@ -2,11 +2,9 @@ package com.product.globie.service.impl;
 
 import com.product.globie.config.Util;
 import com.product.globie.entity.Product;
-import com.product.globie.entity.EReportStatus;
+import com.product.globie.entity.Enum.EReportStatus;
 import com.product.globie.entity.Report;
 import com.product.globie.entity.User;
-import com.product.globie.payload.DTO.PostDTO;
-import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.DTO.ReportDTO;
 import com.product.globie.payload.request.CreateReportRequest;
 import com.product.globie.repository.ProductRepository;
@@ -19,7 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

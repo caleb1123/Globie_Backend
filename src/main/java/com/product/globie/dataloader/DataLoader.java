@@ -1,6 +1,6 @@
 package com.product.globie.dataloader;
 
-import com.product.globie.entity.ERole;
+import com.product.globie.entity.Enum.ERole;
 import com.product.globie.entity.Role;
 import com.product.globie.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;

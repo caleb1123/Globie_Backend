@@ -1,5 +1,6 @@
 package com.product.globie.entity;
 
+import com.product.globie.entity.Enum.ERole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
