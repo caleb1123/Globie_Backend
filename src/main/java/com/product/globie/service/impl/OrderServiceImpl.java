@@ -54,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
         ShippingAddress shippingAddress = shippingAddressRepository.findById(createOrderRequest.getShippingId())
                 .orElseThrow(() -> new RuntimeException("Shipping address not found!"));
 
+        if(!shippingAddress.isStatus()){
+            throw new RuntimeException("You need to select a default shipping address. ID: " + shippingAddress.getShippingId());
+        }
         order.setShippingAddress(shippingAddress);
         order.setUser(util.getUserFromAuthentication());
         double totalAmount = 0;
@@ -66,18 +69,20 @@ public class OrderServiceImpl implements OrderService {
 
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
-            if(product.getStatus().equals(EProductStatus.Processing) || product.getStatus().equals(EProductStatus.Sold))
-                throw new RuntimeException("The status of this product is not SELLING.");
 
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
-            if (product.getQuantity() > amount) {
+            if (product.getQuantity() >= amount) {
                 orderDetail.setAmount(amount);
                 int remainingProduct = product.getQuantity() - amount;
                 product.setQuantity(remainingProduct);
+                if(remainingProduct == 0){
+                    product.setStatus(EProductStatus.Sold.name());
+                    product.setUpdatedTime(new Date());
+                }
                 productRepository.save(product);
             } else {
-                throw new RuntimeException("The number of products ordered is greater than the number of products in stock.");
+                throw new RuntimeException("The number of products ordered is greater than the number of products in stock. ID: " + product.getProductId());
             }
 
             orderDetail.setProduct(product);
