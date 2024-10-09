@@ -1,26 +1,55 @@
-# Stage 1: Build the application
-FROM maven:3.9.8-eclipse-temurin-17 AS builder
+# Giai đoạn 1: Giải quyết và tải xuống phụ thuộc
+FROM eclipse-temurin:17-jdk-jammy as deps
 
-# Tạo thư mục làm việc cho quá trình build
 WORKDIR /build
 
-# Sao chép toàn bộ mã nguồn vào container
-COPY . .
+# Sao chép mvnw với quyền thực thi
+COPY --chmod=0755 mvnw mvnw
+COPY .mvn/ .mvn/
 
-# Chạy lệnh Maven để build ứng dụng và tạo file JAR
-RUN mvn clean package -DskipTests
+# Tải xuống phụ thuộc để tận dụng bộ nhớ đệm của Docker
+RUN --mount=type=bind,source=pom.xml,target=pom.xml \
+    --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests
 
-# Stage 2: Run the application
+# Giai đoạn 2: Xây dựng ứng dụng
+FROM deps as package
+
+WORKDIR /build
+
+COPY ./src src/
+RUN --mount=type=bind,source=pom.xml,target=pom.xml \
+    --mount=type=cache,target=/root/.m2 \
+    ./mvnw package -DskipTests && \
+    mv target/$(./mvnw help:evaluate -Dexpression=project.artifactId -q -DforceStdout)-$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout).jar target/app.jar
+
+# Giai đoạn 3: Trích xuất lớp
+FROM package as extract
+
+WORKDIR /build
+
+RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/extracted
+
+# Giai đoạn 4: Giai đoạn cuối để chạy ứng dụng
 FROM eclipse-temurin:17-jre-jammy AS final
 
-# Tạo thư mục làm việc cho quá trình chạy
-WORKDIR /app
+# Tạo người dùng không có đặc quyền
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+USER appuser
 
-# Sao chép tệp JAR đã được tạo ở stage 1
-COPY --from=builder /build/target/globie-0.0.1-SNAPSHOT.jar /app/app.jar
+# Sao chép các tệp cần thiết từ giai đoạn trích xuất
+COPY --from=extract build/target/extracted/dependencies/ ./
+COPY --from=extract build/target/extracted/spring-boot-loader/ ./
+COPY --from=extract build/target/extracted/snapshot-dependencies/ ./
+COPY --from=extract build/target/extracted/application/ ./
 
-# Mở cổng mà ứng dụng sẽ lắng nghe
 EXPOSE 8080
 
-# Thiết lập lệnh khởi động ứng dụng
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT [ "java", "org.springframework.boot.loader.launch.JarLauncher" ]
