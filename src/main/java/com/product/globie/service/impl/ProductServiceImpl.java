@@ -5,6 +5,7 @@ import com.product.globie.entity.*;
 
 import com.product.globie.entity.Enum.EProductStatus;
 import com.product.globie.entity.Enum.ERole;
+import com.product.globie.payload.DTO.ProductCategoryDTO;
 import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.DTO.ProductImageDTO;
 import com.product.globie.payload.request.CreateProductRequest;
@@ -59,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -112,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -138,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -153,10 +154,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProductStatusSelling() {
-        if(!util.getUserFromAuthentication().getRole().getRoleName().equals(ERole.STAFF)){
-            throw new RuntimeException("USER NOT ALLOWED!");
-        }
-
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
@@ -165,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -192,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -219,7 +216,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
@@ -256,7 +253,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
         ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
-        productDTO.setProductCategoryId(savedProduct.getProductCategory().getProductCategoryId());
+        productDTO.setProductCategory(mapper.map(savedProduct.getProductCategory(), ProductCategoryDTO.class));
         productDTO.setUserId(savedProduct.getUser().getUserId());
 
         return productDTO;
@@ -287,7 +284,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
         ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
-        productDTO.setProductCategoryId(savedProduct.getProductCategory().getProductCategoryId());
+        productDTO.setProductCategory(mapper.map(savedProduct.getProductCategory(), ProductCategoryDTO.class));
         productDTO.setUserId(savedProduct.getUser().getUserId());
 
         return productDTO;
@@ -308,7 +305,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
         ProductDTO productDTO = mapper.map(product, ProductDTO.class);
-        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
         productDTO.setUserId(product.getUser().getUserId());
 
         return productDTO;
@@ -325,7 +322,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
                     if (product.getProductCategory() != null) {
-                        productDTO.setProductCategoryId(product.getProductCategory().getProductCategoryId());
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
                         productDTO.setUserId(product.getUser().getUserId());
