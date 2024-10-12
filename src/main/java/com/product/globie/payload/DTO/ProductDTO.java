@@ -22,6 +22,6 @@ public class ProductDTO {
     private Date createdTime;
     private Date updatedTime;
     private String status;
-    private int productCategoryId;
+    private ProductCategoryDTO productCategory;
     private int userId;
 }
