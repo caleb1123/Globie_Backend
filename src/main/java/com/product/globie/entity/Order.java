@@ -25,6 +25,9 @@ public class Order {
     @Column(name = "order_code", nullable = false)
     private String orderCode;
 
+    @Column(name = "order_name", nullable = false)
+    private String orderName;
+
     @Column(name = "order_date", nullable = false)
     private Date orderDate;
 
@@ -42,7 +45,7 @@ public class Order {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "shipping_id", nullable = false)
+    @JoinColumn(name = "shipping_id")
     private ShippingAddress shippingAddress;
 
     @OneToMany(mappedBy = "order")
@@ -53,4 +56,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private Collection<Transaction> transactions;
+
+    @OneToOne(mappedBy = "order")
+    private UserMember userMember;
 }

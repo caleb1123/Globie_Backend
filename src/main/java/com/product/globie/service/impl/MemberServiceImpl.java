@@ -2,14 +2,12 @@ package com.product.globie.service.impl;
 
 import com.product.globie.config.Util;
 import com.product.globie.entity.*;
-import com.product.globie.payload.DTO.AccountDTO;
-import com.product.globie.payload.DTO.MemberDTO;
-import com.product.globie.payload.DTO.PostDTO;
+import com.product.globie.entity.Enum.EOrderStatus;
+import com.product.globie.entity.Enum.EProductStatus;
+import com.product.globie.payload.DTO.*;
 import com.product.globie.payload.request.CreateMemberRequest;
-import com.product.globie.repository.MemberRepository;
-import com.product.globie.repository.RoleRepository;
-import com.product.globie.repository.UserMemberRepository;
-import com.product.globie.repository.UserRepository;
+import com.product.globie.payload.request.CreateOrderRequest;
+import com.product.globie.repository.*;
 import com.product.globie.service.MemberService;
 import jakarta.mail.MessagingException;
 import org.modelmapper.ModelMapper;
@@ -17,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +46,8 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    OrderRepository orderRepository;
 
 
 
@@ -78,30 +80,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void createStore(int memberLevelId) {
-        MemberLevel memberLevel = memberRepository.findById(memberLevelId)
-                .orElseThrow(() -> new RuntimeException("Member Level not found!"));
-        UserMember userMember = new UserMember();
-            userMember.setMemberStartDate(LocalDate.now());
-            userMember.setMemberEndDate(userMember.getMemberStartDate().plusMonths(memberLevel.getDurationInMonths()));
-            userMember.setMemberLevel(memberLevel);
-            userMember.setStatus(false);
-            userMember.setUser(util.getUserFromAuthentication());
-
-            userMemberRepository.save(userMember);
-    }
-
-    @Override
-    public void updateStatusStore(int id) throws MessagingException {
+    public void deleteStorePackage(int id) throws MessagingException {
         UserMember userMember = userMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User member not found!"));
 
-        userMember.setStatus(true);
+        userMember.setStatus(false);
 
         MemberLevel memberLevel = memberRepository.findById(userMember.getMemberLevel().getMemberLevelId())
                 .orElseThrow(() -> new RuntimeException("Member Level not found!"));
         User user = userRepository.findById(userMember.getUser().getUserId())
-                        .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("User not found!"));
         Role role = roleRepository.findById(2)
                 .orElseThrow(() -> new RuntimeException("Role not found!"));
         user.setRole(role);

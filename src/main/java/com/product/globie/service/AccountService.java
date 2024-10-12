@@ -2,6 +2,7 @@ package com.product.globie.service;
 
 import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.AccountDTO;
+import com.product.globie.payload.DTO.RoleDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
 import com.product.globie.payload.request.UpdateAccountRequest;
 import com.product.globie.payload.response.MyAccountResponse;
@@ -17,4 +18,6 @@ public interface AccountService {
 
     MyAccountResponse myAccount();
     void updateStatusUserToFalse(int uId);
+
+    List<RoleDTO> getRoles();
 }

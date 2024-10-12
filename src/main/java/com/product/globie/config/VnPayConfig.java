@@ -32,7 +32,7 @@ public class VnPayConfig {
     @Value("${payment.vnPay.orderType}")
     private String orderType;
 
-    public Map<String, String> getVNPayConfig(int orderId, String username, int userId) {
+    public Map<String, String> getVNPayConfig(int orderId, String username, int userId, String orderName) {
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnp_Version);
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
@@ -42,7 +42,7 @@ public class VnPayConfig {
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VNPayUtil.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
-        vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl + "?orderId=" + orderId + "&username=" + username + "&userid=" + userId);
+        vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl + "?orderId=" + orderId + "&orderName=" + orderName + "&username=" + username + "&userid=" + userId);
 
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
         Calendar calendar = Calendar.getInstance(timeZone);

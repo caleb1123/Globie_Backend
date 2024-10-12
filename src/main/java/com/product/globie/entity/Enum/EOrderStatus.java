@@ -1,10 +1,12 @@
 package com.product.globie.entity.Enum;
 
 public enum EOrderStatus {
-    SHIPPED ,
+    SHIPPING ,
     DELIVERED ,
     CANCELLED,
     RETURNED,
     FAILED,
-    PENDING;
+    PENDING,
+    SUCCESSFUL;
+
 }

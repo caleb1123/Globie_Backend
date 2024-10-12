@@ -314,8 +314,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getProductByCategory(int cId) {
         List<Product> products = productRepository.findProductByProductCategory(cId);
-        if(products.isEmpty()){
-            throw new RuntimeException("There are no products of this Category Id: " + cId);
+        if (products.isEmpty()) {
+            return Collections.emptyList();
         }
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> {
@@ -332,7 +332,7 @@ public class ProductServiceImpl implements ProductService {
                 })
                 .collect(Collectors.toList());
 
-        return productDTOS.isEmpty() ? null : productDTOS;
+        return productDTOS; // No need for the additional check here
     }
 
     @Override

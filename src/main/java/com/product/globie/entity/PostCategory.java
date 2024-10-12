@@ -17,7 +17,7 @@ public class PostCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postCategoryId;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, columnDefinition = "nvarchar(50)")
     private String categoryName;
     @Column
     private boolean status;

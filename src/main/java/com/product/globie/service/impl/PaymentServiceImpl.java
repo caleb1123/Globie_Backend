@@ -3,12 +3,10 @@ package com.product.globie.service.impl;
 import com.product.globie.VNPay.VNPayUtil;
 import com.product.globie.config.Util;
 import com.product.globie.config.VnPayConfig;
+import com.product.globie.entity.*;
 import com.product.globie.entity.Enum.EOrderStatus;
 import com.product.globie.entity.Enum.EPaymentStatus;
-import com.product.globie.entity.Order;
-import com.product.globie.entity.Payment;
-import com.product.globie.entity.Transaction;
-import com.product.globie.entity.User;
+import com.product.globie.entity.Enum.ERole;
 import com.product.globie.payload.request.PaymentRequest;
 import com.product.globie.payload.response.PaymentResponse;
 import com.product.globie.payload.response.VNPayResponse;
@@ -54,6 +52,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     Util util;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    UserMemberRepository userMemberRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
 
     @Override
     public VNPayResponse vnPayPayment(int orderId, HttpServletRequest request) {
@@ -76,7 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
         String bankCode = "NCB";
         Map<String, String> vnpParamsMap;
 
-        vnpParamsMap = vnPayConfig.getVNPayConfig(order.getOrderId(), user.getUserName(), user.getUserId());
+        vnpParamsMap = vnPayConfig.getVNPayConfig(order.getOrderId(), user.getUserName(), user.getUserId(), order.getOrderName());
         // Thiết lập các tham số cho VNPay
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
@@ -129,7 +136,22 @@ public class PaymentServiceImpl implements PaymentService {
 
             Order order = orderRepository.findById(Integer.valueOf(orderId))
                     .orElseThrow(() -> new RuntimeException("Order not found!"));
-            order.setStatus(EOrderStatus.SHIPPED.name());
+            if(order.getOrderName().equals("Product_Order")){ order.setStatus(EOrderStatus.SHIPPING.name());}
+            else {
+                order.setStatus(EOrderStatus.SUCCESSFUL.name());
+                UserMember userMember = userMemberRepository.findByOrder(order.getOrderId())
+                        .orElseThrow(() -> new RuntimeException("User Member not found!"));
+                userMember.setStatus(true);
+                userMemberRepository.save(userMember);
+
+                User user = userRepository.findById(util.getUserFromAuthentication().getUserId())
+                        .orElseThrow(() -> new RuntimeException("User not found with id: " + userMember.getUser().getUserId()));
+                Role role = roleRepository.findById(2)
+                        .orElseThrow(() -> new RuntimeException("Role not found!"));
+                user.setRole(role);
+                userRepository.save(user);
+            }
+
             orderRepository.save(order);
 
             Transaction transaction = new Transaction();
@@ -159,7 +181,7 @@ public class PaymentServiceImpl implements PaymentService {
     public VNPayResponse changeOrderStatus(int orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found!"));
-            order.setStatus(EOrderStatus.SHIPPED.name());
+            order.setStatus(EOrderStatus.SHIPPING.name());
             order.setOrderDate(new Date());
             orderRepository.save(order);
         return VNPayResponse.builder()
