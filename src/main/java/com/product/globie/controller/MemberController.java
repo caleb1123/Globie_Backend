@@ -57,19 +57,9 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create_store/{memberLevelId}")
-    public ResponseEntity<ApiResponse<String>> createStore(@PathVariable int memberLevelId) {
-        memberService.createStore(memberLevelId);
-        ApiResponse<String> response = ApiResponse.<String>builder()
-                .code(HttpStatus.CREATED.value())
-                .message("Successfully created Store ")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/update_status_store/{userMemberId}")
-    public ResponseEntity<ApiResponse<String>> updateStatusStore(@PathVariable int userMemberId) throws MessagingException {
-        memberService.updateStatusStore(userMemberId);
+    @PutMapping("/delete_store/{userMemberId}")
+    public ResponseEntity<ApiResponse<String>> deleteStore(@PathVariable int userMemberId) throws MessagingException {
+        memberService.deleteStorePackage(userMemberId);
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully updated Store ")

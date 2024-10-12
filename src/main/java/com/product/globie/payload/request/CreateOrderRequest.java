@@ -13,8 +13,6 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateOrderRequest {
-    String orderCode;
-
     String paymentMethodOrder;
 
     int shippingId;

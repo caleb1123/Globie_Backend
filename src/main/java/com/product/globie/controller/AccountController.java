@@ -1,6 +1,7 @@
 package com.product.globie.controller;
 
 import com.product.globie.payload.DTO.AccountDTO;
+import com.product.globie.payload.DTO.RoleDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
 import com.product.globie.payload.request.UpdateAccountRequest;
 import com.product.globie.payload.response.ApiResponse;
@@ -29,6 +30,17 @@ public class AccountController {
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched all accounts")
                 .data(users)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/role/all")
+    public ResponseEntity<ApiResponse<List<RoleDTO>>> getAllRole() {
+        List<RoleDTO> roleDTOS = accountService.getRoles();
+        ApiResponse<List<RoleDTO>> response = ApiResponse.<List<RoleDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched all Roles")
+                .data(roleDTOS)
                 .build();
         return ResponseEntity.ok(response);
     }

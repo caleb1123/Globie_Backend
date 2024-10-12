@@ -1,7 +1,9 @@
 package com.product.globie.service;
 
 import com.product.globie.payload.DTO.MemberDTO;
+import com.product.globie.payload.DTO.OrderDTO;
 import com.product.globie.payload.request.CreateMemberRequest;
+import com.product.globie.payload.request.CreateOrderRequest;
 import jakarta.mail.MessagingException;
 
 import java.util.List;
@@ -13,8 +15,5 @@ public interface MemberService {
 
     void deleteMemberLevel(int id);
 
-    void createStore(int memberLevelId);
-
-    void updateStatusStore(int id) throws MessagingException;
-
+    void deleteStorePackage(int id) throws MessagingException;
 }

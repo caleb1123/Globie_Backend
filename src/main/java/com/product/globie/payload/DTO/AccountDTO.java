@@ -11,6 +11,7 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountDTO {
+    private int userId;
     private String userName;
     private String fullName;
     private String avatar;

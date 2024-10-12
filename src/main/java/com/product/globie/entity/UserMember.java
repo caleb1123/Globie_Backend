@@ -19,6 +19,18 @@ public class UserMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userMemberId ;
 
+    @Column(nullable = false, columnDefinition = "nvarchar(255)")
+    private String storeName;
+
+    @Column(nullable = false, columnDefinition = "nvarchar(max)")
+    private String description;
+
+    @Column(nullable = false, columnDefinition = "nvarchar(255)")
+    private String storeAddress;
+
+    @Column(nullable = false, columnDefinition = "nvarchar(12)")
+    private String storePhone;
+
     @Column
     private LocalDate memberStartDate;
 
@@ -35,4 +47,8 @@ public class UserMember {
     @ManyToOne
     @JoinColumn(name = "memberLevelId")
     private MemberLevel memberLevel;
+
+    @OneToOne
+    @JoinColumn(name = "orderId")
+    private Order order;
 }

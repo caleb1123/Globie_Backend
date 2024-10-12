@@ -50,6 +50,4 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private Collection<Comment> comments;
-
-
 }

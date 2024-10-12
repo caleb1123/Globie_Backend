@@ -1,7 +1,9 @@
 package com.product.globie.service.impl;
 
+import com.product.globie.entity.Role;
 import com.product.globie.entity.User;
 import com.product.globie.payload.DTO.AccountDTO;
+import com.product.globie.payload.DTO.RoleDTO;
 import com.product.globie.payload.request.CreateAccountRequest;
 import com.product.globie.payload.request.UpdateAccountRequest;
 import com.product.globie.payload.response.MyAccountResponse;
@@ -24,9 +26,9 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     ModelMapper modelMapper;
+
 
 
     @Override
@@ -43,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
         newUser.setPassword(encodedPassword);
         newUser.setRole(roleRepository.findRoleByRoleId(accountDTO.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Role not found with name: " + accountDTO.getRoleId())));
-
+        newUser.setStatus(true);
         User savedUser = userRepository.save(newUser);
 
         return modelMapper.map(savedUser, AccountDTO.class);
@@ -104,4 +106,13 @@ public class AccountServiceImpl implements AccountService {
         user.setStatus(false);
         userRepository.save(user);
     }
+
+    @Override
+    public List<RoleDTO> getRoles() {
+        List<Role> roles = roleRepository.findAll();
+
+        // Ánh xạ từng phần tử trong List<User> sang List<AccountDTO>
+        return roles.stream()
+                .map(role -> modelMapper.map(role, RoleDTO.class))
+                .collect(Collectors.toList());    }
 }

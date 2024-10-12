@@ -3,7 +3,9 @@ package com.product.globie.controller;
 import com.product.globie.entity.Enum.EPaymentMethod;
 import com.product.globie.entity.Order;
 import com.product.globie.payload.DTO.OrderDTO;
+import com.product.globie.payload.DTO.OrderStoreDTO;
 import com.product.globie.payload.request.CreateOrderRequest;
+import com.product.globie.payload.request.CreateOrderStoreRequest;
 import com.product.globie.payload.request.PaymentRequest;
 import com.product.globie.payload.response.PaymentResponse;
 import com.product.globie.payload.response.ResponseObject;
@@ -38,6 +40,12 @@ public class PaymentController {
         }else{
             return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.changeOrderStatus(orderDTO.getOrderId()));
         }
+    }
+
+    @PostMapping("/vn-pay-store")
+    public ResponseObject<VNPayResponse>VNPayStore(@RequestBody CreateOrderStoreRequest request, HttpServletRequest httpServletRequest) {
+        OrderStoreDTO orderStoreDTO = orderService.createOrderStore(request);
+            return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.vnPayPayment(orderStoreDTO.getOrderId(), httpServletRequest));
     }
 
 
