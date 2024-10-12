@@ -112,7 +112,7 @@ public class MemberServiceImpl implements MemberService {
                         .orElseThrow(() -> new RuntimeException("Member Level not found!"));
                 User user = userRepository.findById(userMember.getUser().getUserId())
                         .orElseThrow(() -> new RuntimeException("User not found!"));
-                Role role = roleRepository.findById(1)
+                Role role = roleRepository.findById(4)
                         .orElseThrow(() -> new RuntimeException("Role not found!"));
 
                 user.setRole(role);
