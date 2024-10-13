@@ -51,7 +51,7 @@ public class PaymentController {
 
     @GetMapping("/call-back")
     public void payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String url = "http://localhost:3000";
+        String url = "http://localhost:3000/vnpay-return";
         String urlFail = "http://localhost:3000";
         PaymentResponse payment = paymentService.handleCallback(request);
         if (payment.getCode().equals("00")) {
