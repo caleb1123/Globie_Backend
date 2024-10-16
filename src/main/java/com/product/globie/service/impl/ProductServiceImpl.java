@@ -5,6 +5,7 @@ import com.product.globie.entity.*;
 
 import com.product.globie.entity.Enum.EProductStatus;
 import com.product.globie.entity.Enum.ERole;
+import com.product.globie.payload.DTO.AccountDTO;
 import com.product.globie.payload.DTO.ProductCategoryDTO;
 import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.DTO.ProductImageDTO;
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -89,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -116,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -142,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -165,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -192,7 +193,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -219,7 +220,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;
@@ -254,7 +255,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
         productDTO.setProductCategory(mapper.map(savedProduct.getProductCategory(), ProductCategoryDTO.class));
-        productDTO.setUserId(savedProduct.getUser().getUserId());
+        productDTO.setUser(mapper.map(savedProduct.getUser(), AccountDTO.class));
 
         return productDTO;
     }
@@ -276,8 +277,13 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productRequest.getDescription());
         product.setBrand(productRequest.getBrand());
         product.setOrigin(productRequest.getOrigin());
-        product.setPrice(productRequest.getPrice());
-        product.setQuantity(productRequest.getQuantity());
+        product.setPrice(product.getPrice());
+        if(product.getQuantity() == 0 && productRequest.getQuantity() > 0){
+                product.setQuantity(productRequest.getQuantity());
+                product.setStatus(EProductStatus.Selling.name());
+        }else{
+            product.setQuantity(productRequest.getQuantity());
+        }
         product.setWarranty(productRequest.getWarranty());
         product.setUpdatedTime(new Date());
 
@@ -285,7 +291,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductDTO productDTO = mapper.map(savedProduct, ProductDTO.class);
         productDTO.setProductCategory(mapper.map(savedProduct.getProductCategory(), ProductCategoryDTO.class));
-        productDTO.setUserId(savedProduct.getUser().getUserId());
+        productDTO.setUser(mapper.map(savedProduct.getUser(), AccountDTO.class));
 
         return productDTO;
     }
@@ -306,7 +312,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not Found with Id: " + pId));
         ProductDTO productDTO = mapper.map(product, ProductDTO.class);
         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
-        productDTO.setUserId(product.getUser().getUserId());
+        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
 
         return productDTO;
     }
@@ -325,7 +331,7 @@ public class ProductServiceImpl implements ProductService {
                         productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
                     }
                     if (product.getUser() != null) {
-                        productDTO.setUserId(product.getUser().getUserId());
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
                     }
 
                     return productDTO;

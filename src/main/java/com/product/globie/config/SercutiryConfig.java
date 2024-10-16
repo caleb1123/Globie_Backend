@@ -46,8 +46,8 @@ public class SercutiryConfig {
                 apiVersion + "/post_category/**",
                 apiVersion + "/member/**",
                 apiVersion + "/rates/**",
-
-
+                apiVersion + "/payment/call-back",
+                apiVersion + "/payment/success",
         };
 
 //        httpSecurity
