@@ -1,5 +1,8 @@
 package com.product.globie.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.product.globie.config.PayOSConfig;
 import com.product.globie.entity.Enum.EPaymentMethod;
 import com.product.globie.entity.Order;
 import com.product.globie.payload.DTO.OrderDTO;
@@ -7,6 +10,7 @@ import com.product.globie.payload.DTO.OrderStoreDTO;
 import com.product.globie.payload.request.CreateOrderRequest;
 import com.product.globie.payload.request.CreateOrderStoreRequest;
 import com.product.globie.payload.request.PaymentRequest;
+import com.product.globie.payload.response.PayOSResponse;
 import com.product.globie.payload.response.PaymentResponse;
 import com.product.globie.payload.response.ResponseObject;
 import com.product.globie.payload.response.VNPayResponse;
@@ -20,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("${api.version}/payment")
@@ -31,6 +36,9 @@ public class PaymentController {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    PayOSConfig payOSConfig;
 
     @PostMapping("/vn-pay")
     public ResponseObject<VNPayResponse>VNPay(@RequestBody CreateOrderRequest request, HttpServletRequest httpServletRequest) {
@@ -53,6 +61,7 @@ public class PaymentController {
     public void payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String url = "http://localhost:3000/vnpay-return";
         String urlFail = "http://localhost:3000";
+
         PaymentResponse payment = paymentService.handleCallback(request);
         if (payment.getCode().equals("00")) {
             response.sendRedirect(url);
@@ -60,5 +69,38 @@ public class PaymentController {
             response.sendRedirect(urlFail);
         }
     }
+
+    @PostMapping("/pay-os-create")
+    public ResponseObject<PayOSResponse>PayOS(@RequestBody CreateOrderRequest request, HttpServletRequest httpServletRequest) throws Exception {
+        OrderDTO orderDTO = orderService.createOrder(request);
+        if(orderDTO.getPaymentMethodOrder().equals(EPaymentMethod.ELECTRONIC_PAYMENT.name())) {
+            return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createPaymentLink(orderDTO.getOrderId(), httpServletRequest));
+        }
+        else{
+            return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.changeOrderStatusPayOs(orderDTO.getOrderId()));
+        }
+    }
+
+
+    @GetMapping("/success")
+    public void payOSCallbackHandlerSuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String url = "http://localhost:3000/vnpay-return";
+
+        PaymentResponse payment = paymentService.handleCallbackPayOSSuccess(request);
+        if (payment.getCode().equals("00")) {
+            response.sendRedirect(url);
+        }
+    }
+
+    @GetMapping("/cancel")
+    public void payOSCallbackHandlerCancel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String url = "http://localhost:3000/vnpay-return";
+
+        PaymentResponse payment = paymentService.handleCallbackPayOSCancel(request);
+        if (payment.getCode().equals("00")) {
+            response.sendRedirect(url);
+        }
+    }
+
 }
 

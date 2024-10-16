@@ -278,6 +278,6 @@ public class OrderServiceImpl implements OrderService {
         // Bạn có thể thay thế bằng logic lấy số thứ tự từ DB
         String uniqueId = String.format("%04d", new Random().nextInt(10000));
 
-        return "USER" + userId + "-" + date + "-" + uniqueId;
+        return userId +  date  + uniqueId;
     }
 }
