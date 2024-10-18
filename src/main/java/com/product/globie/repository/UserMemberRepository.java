@@ -19,4 +19,7 @@ public interface UserMemberRepository extends JpaRepository<UserMember, Integer>
 
     @Query("select um from UserMember um where um.user.userId = :id and um.status = true")
     UserMember findByUserIdAndStatusTrue(@Param("id") int id);
+
+    @Query("select um from UserMember um where um.user.userId = :id and um.status = false")
+    UserMember findByUserIdAndStatusFalse(@Param("id") int id);
 }

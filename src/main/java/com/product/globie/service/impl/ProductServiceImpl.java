@@ -317,6 +317,30 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
+    public List<ProductDTO> filterProducts(String brand, String origin, Double minPrice, Double maxPrice) {
+        List<Product> products = productRepository.filterProducts(brand, origin, minPrice, maxPrice);
+        if(products.isEmpty()){
+            throw new RuntimeException("Have no Products by your filter!");
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(Product -> Product.getStatus().equals("Selling"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
     @Override
     public List<ProductDTO> getProductByCategory(int cId) {
         List<Product> products = productRepository.findProductByProductCategory(cId);
@@ -457,6 +481,7 @@ public class ProductServiceImpl implements ProductService {
 
         return productImageDTO;
     }
+
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
