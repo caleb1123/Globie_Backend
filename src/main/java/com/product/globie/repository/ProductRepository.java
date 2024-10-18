@@ -15,4 +15,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT p FROM Product p WHERE p.productCategory.productCategoryId = :cId")
     List<Product> findProductByProductCategory(@Param("cId") int cId);
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:brand IS NULL OR p.brand = :brand) AND " +
+            "(:origin IS NULL OR p.origin = :origin) AND " +
+            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR p.price <= :maxPrice)")
+    List<Product> filterProducts(@Param("brand") String brand,
+                                 @Param("origin") String origin,
+                                 @Param("minPrice") Double minPrice,
+                                 @Param("maxPrice") Double maxPrice);
 }

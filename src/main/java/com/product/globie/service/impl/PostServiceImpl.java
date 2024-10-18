@@ -209,6 +209,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("There are no Posts of this Category Id: " + cId);
         }
         List<PostDTO> postDTOS = posts.stream()
+                .filter(Post :: isStatus)
                 .map(post -> {
                     PostDTO postDTO = mapper.map(post, PostDTO.class);
 

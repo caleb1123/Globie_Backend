@@ -101,6 +101,20 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> filterProducts( @RequestParam(required = false) String brand,
+                                                                         @RequestParam(required = false) String origin,
+                                                                         @RequestParam(required = false) Double minPrice,
+                                                                         @RequestParam(required = false) Double maxPrice) {
+        List<ProductDTO> productDTOList = productService.filterProducts(brand, origin, minPrice, maxPrice);
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/category/{cId}")
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByCategoryId(@PathVariable int cId) {
         List<ProductDTO> productDTOList = productService.getProductByCategory(cId);

@@ -249,11 +249,17 @@ public class OrderServiceImpl implements OrderService {
         userMember.setMemberEndDate(userMember.getMemberStartDate().plusMonths(memberLevel.getDurationInMonths()));
         userMember.setMemberLevel(memberLevel);
         userMember.setStatus(false);
-        UserMember userMember1 = userMemberRepository.findByUserIdAndStatusTrue(util.getUserFromAuthentication().getUserId());
+        UserMember userMember1 = userMemberRepository.findByUserIdAndStatusFalse(util.getUserFromAuthentication().getUserId());
         if(userMember1 == null){
             userMember.setUser(util.getUserFromAuthentication());
         }else {
-            throw new RuntimeException("You have purchased the package: " + userMember1.getMemberLevel().getLevelName());
+            userMemberRepository.delete(userMember1);
+        }
+        UserMember userMember2 = userMemberRepository.findByUserIdAndStatusTrue(util.getUserFromAuthentication().getUserId());
+        if(userMember2 == null){
+            userMember.setUser(util.getUserFromAuthentication());
+        }else {
+            throw new RuntimeException("You have purchased the package: " + userMember2.getMemberLevel().getLevelName());
         }
         userMember.setOrder(order);
         userMemberRepository.save(userMember);

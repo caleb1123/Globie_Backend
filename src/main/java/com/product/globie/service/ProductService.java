@@ -1,5 +1,6 @@
 package com.product.globie.service;
 
+import com.product.globie.entity.Product;
 import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.payload.DTO.ProductImageDTO;
 import com.product.globie.payload.request.CreateProductRequest;
@@ -26,6 +27,8 @@ public interface ProductService {
     List<ProductDTO> getAllProductStatusProcessing();
 
     ProductDTO createProduct(CreateProductRequest productRequest);
+
+    List<ProductDTO> filterProducts(String brand, String origin, Double minPrice, Double maxPrice);
 
     void deleteProduct(int pId);
 

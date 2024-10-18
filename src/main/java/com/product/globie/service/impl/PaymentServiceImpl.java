@@ -251,13 +251,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         // Xây dựng returnUrl và cancelUrl
-        String returnUrl = baseUrl + "/api/v1/payment" + "/success" +
+        String returnUrl = baseUrl + "/payment-return" +
                 "?orderId=" + order.getOrderId() +
                 "&userName=" + user.getUserName() +
                 "&amount=" + itemData.getPrice() +
                 "&name=" + itemData.getName();
 
-        String cancelUrl = baseUrl + "/api/v1/payment" + "/cancel" +
+        String cancelUrl = baseUrl + "/payment-return"  +
                 "?orderId=" + order.getOrderId() +
                 "&userName=" + user.getUserName() +
                 "&amount=" + itemData.getPrice() +
@@ -293,7 +293,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public PaymentResponse handleCallbackPayOSSuccess(HttpServletRequest request) {
+    public PaymentResponse handleCallbackPayOS(HttpServletRequest request) {
         String status = request.getParameter("status");
         String code = request.getParameter("code");
         String orderId = request.getParameter("orderId");
@@ -303,7 +303,8 @@ public class PaymentServiceImpl implements PaymentService {
         String amount = request.getParameter("amount");
 
         Payment payment = paymentRepository.findPaymentByPaymentCode(orderCode);
-        if (code.equals("00") && status.equals("PAID")) {
+
+            if (code.equals("00") && status.equals("PAID")) {
             payment.setStatus(EPaymentStatus.SUCCESSFULLY.name());
             payment.setPaymentDate(new Date());
             paymentRepository.save(payment);
@@ -342,41 +343,17 @@ public class PaymentServiceImpl implements PaymentService {
             return new PaymentResponse(status, "SUCCESSFUL", mapper.map(payment, PaymentResponse.class));
         }
         else {
-            return new PaymentResponse(status, "FAILED", mapper.map(payment, PaymentResponse.class));
+                payment.setStatus(EPaymentStatus.FAILURE.name());
+                paymentRepository.save(payment);
+
+                Order order = orderRepository.findById(Integer.valueOf(orderId))
+                        .orElseThrow(() -> new RuntimeException("Order not found!"));
+                order.setStatus(EOrderStatus.CANCELLED.name());
+                orderRepository.save(order);
+
+                return new PaymentResponse(status, "CANCELLED", mapper.map(payment, PaymentResponse.class));
         }
     }
-
-    @Override
-    public PaymentResponse handleCallbackPayOSCancel(HttpServletRequest request) {
-        String status = request.getParameter("status");
-        String orderId = request.getParameter("orderId");
-        String orderCode = request.getParameter("orderCode");
-
-        Payment payment = paymentRepository.findPaymentByPaymentCode(orderCode);
-        payment.setStatus(EPaymentStatus.FAILURE.name());
-        paymentRepository.save(payment);
-
-        Order order = orderRepository.findById(Integer.valueOf(orderId))
-                .orElseThrow(() -> new RuntimeException("Order not found!"));
-        order.setStatus(EOrderStatus.CANCELLED.name());
-        orderRepository.save(order);
-
-        return new PaymentResponse(status, "CANCELLED", mapper.map(payment, PaymentResponse.class));
-    }
-
-//    private String getBaseUrl(HttpServletRequest request) {
-//        String scheme = request.getScheme();
-//        String serverName = request.getServerName();
-//        int serverPort = request.getServerPort();
-//        String contextPath = request.getContextPath();
-//
-//        String url = scheme + "://" + serverName;
-//        if ((scheme.equals("http") && serverPort != 80) || (scheme.equals("https") && serverPort != 443)) {
-//            url += ":" + serverPort;
-//        }
-//        url += contextPath;
-//        return url;
-//    }
 
     private String getBaseUrl(HttpServletRequest request) {
         String scheme = request.getScheme();

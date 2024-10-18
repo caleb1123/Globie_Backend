@@ -16,11 +16,7 @@ public interface PaymentService {
 
     PayOSResponse changeOrderStatusPayOs(int orderId);
 
-
     PayOSResponse createPaymentLink(int orderId, HttpServletRequest request) throws Exception;
 
-    PaymentResponse handleCallbackPayOSSuccess(HttpServletRequest request);
-
-    PaymentResponse handleCallbackPayOSCancel(HttpServletRequest request);
-
+    PaymentResponse handleCallbackPayOS(HttpServletRequest request);
 }

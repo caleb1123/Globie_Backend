@@ -50,13 +50,6 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/vn-pay-store")
-    public ResponseObject<VNPayResponse>VNPayStore(@RequestBody CreateOrderStoreRequest request, HttpServletRequest httpServletRequest) {
-        OrderStoreDTO orderStoreDTO = orderService.createOrderStore(request);
-            return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.vnPayPayment(orderStoreDTO.getOrderId(), httpServletRequest));
-    }
-
-
     @GetMapping("/call-back")
     public void payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String url = "http://localhost:3000/vnpay-return";
@@ -81,26 +74,23 @@ public class PaymentController {
         }
     }
 
-
-    @GetMapping("/success")
-    public void payOSCallbackHandlerSuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String url = "http://localhost:3000/vnpay-return";
-
-        PaymentResponse payment = paymentService.handleCallbackPayOSSuccess(request);
-        if (payment.getCode().equals("00")) {
-            response.sendRedirect(url);
-        }
+    @PostMapping("/payos-store")
+    public ResponseObject<PayOSResponse>PayOSStore(@RequestBody CreateOrderStoreRequest request, HttpServletRequest httpServletRequest) throws Exception {
+        OrderStoreDTO orderStoreDTO = orderService.createOrderStore(request);
+        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createPaymentLink(orderStoreDTO.getOrderId(), httpServletRequest));
     }
 
-    @GetMapping("/cancel")
-    public void payOSCallbackHandlerCancel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String url = "http://localhost:3000/vnpay-return";
+    @GetMapping("/payos_call_back")
+    public void payOSCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String url = "http://localhost:3000/payment-return";
+        String urlFail = "http://localhost:3000/payment-return";
 
-        PaymentResponse payment = paymentService.handleCallbackPayOSCancel(request);
+        PaymentResponse payment = paymentService.handleCallbackPayOS(request);
         if (payment.getCode().equals("00")) {
             response.sendRedirect(url);
+        } else {
+            response.sendRedirect(urlFail);
         }
     }
-
 }
 
