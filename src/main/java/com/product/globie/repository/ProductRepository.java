@@ -25,4 +25,19 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
                                  @Param("origin") String origin,
                                  @Param("minPrice") Double minPrice,
                                  @Param("maxPrice") Double maxPrice);
+
+    @Query(value = "SELECT COUNT(*) AS product\n" +
+            "FROM product\n" +
+            "WHERE status = 'Selling'; ", nativeQuery = true)
+    Integer countProductSelling();
+
+    @Query(value = "SELECT COUNT(*) AS product\n" +
+            "FROM product\n" +
+            "WHERE status = 'Processing'; ", nativeQuery = true)
+    Integer countProductProcessing();
+
+    @Query(value = "SELECT COUNT(*) AS product\n" +
+            "FROM product\n" +
+            "WHERE status = 'Sold'; ", nativeQuery = true)
+    Integer countProductSold();
 }

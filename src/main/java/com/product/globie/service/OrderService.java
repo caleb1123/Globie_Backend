@@ -19,4 +19,14 @@ public interface OrderService {
 
     OrderStoreDTO createOrderStore(CreateOrderStoreRequest createOrderRequest);
 
+    Integer countOrderByDay();
+
+    Integer countOrderByYear();
+
+    Integer countOrderShipping();
+
+    Integer countOrderPending();
+
+    Integer countOrderCanceled();
+
 }

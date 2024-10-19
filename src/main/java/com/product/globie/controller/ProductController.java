@@ -239,4 +239,37 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/count_selling")
+    public ResponseEntity<ApiResponse<Integer>> countProductSelling() {
+        int count = productService.countProductSelling();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_processing")
+    public ResponseEntity<ApiResponse<Integer>> countProductProcessing() {
+        int count = productService.countProductProcessing();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_sold")
+    public ResponseEntity<ApiResponse<Integer>> countProductSold() {
+        int count = productService.countProductSold();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 }

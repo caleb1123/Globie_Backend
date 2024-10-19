@@ -25,4 +25,14 @@ public interface UserRepository extends JpaRepository<User,Integer> {
                                                        @Param("phone") String phone);
 
     boolean existsByUserName(String userName);
+
+    @Query(value = "SELECT COUNT(*) AS total_users\n" +
+            "FROM users\n" +
+            "WHERE status = 1;", nativeQuery = true)
+    Integer countUserTrue();
+
+    @Query(value = "SELECT COUNT(*) AS total_users\n" +
+            "FROM users\n" +
+            "WHERE status = 0;", nativeQuery = true)
+    Integer countUserFalse();
 }

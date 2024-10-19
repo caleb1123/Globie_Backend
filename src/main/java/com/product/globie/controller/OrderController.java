@@ -68,4 +68,58 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/count_day")
+    public ResponseEntity<ApiResponse<Integer>> countOrderByDay() {
+        int countDay = orderService.countOrderByDay();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(countDay)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_year")
+    public ResponseEntity<ApiResponse<Integer>> countOrderByYear() {
+        int countYear = orderService.countOrderByYear();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(countYear)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_shipping")
+    public ResponseEntity<ApiResponse<Integer>> countOrderShipping() {
+        int count = orderService.countOrderShipping();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_pending")
+    public ResponseEntity<ApiResponse<Integer>> countOrderPending() {
+        int count = orderService.countOrderPending();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_cancel")
+    public ResponseEntity<ApiResponse<Integer>> countOrderCancel() {
+        int count = orderService.countOrderCanceled();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

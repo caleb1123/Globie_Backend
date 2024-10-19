@@ -482,6 +482,33 @@ public class ProductServiceImpl implements ProductService {
         return productImageDTO;
     }
 
+    @Override
+    public Integer countProductSelling() {
+        Integer product = productRepository.countProductSelling(); // Dùng Integer để xử lý trường hợp null
+        if (product == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return product; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countProductSold() {
+        Integer product = productRepository.countProductSold(); // Dùng Integer để xử lý trường hợp null
+        if (product == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return product; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countProductProcessing() {
+            Integer product = productRepository.countProductProcessing(); // Dùng Integer để xử lý trường hợp null
+            if (product == null) {
+                return 0; // Trả về 0 nếu kết quả là null
+            }
+            return product; // Trả về giá trị nếu khác null
+    }
+
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));

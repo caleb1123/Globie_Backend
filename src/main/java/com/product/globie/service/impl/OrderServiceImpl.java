@@ -271,7 +271,50 @@ public class OrderServiceImpl implements OrderService {
         return orderStoreDTO;
     }
 
+    @Override
+    public Integer countOrderByDay() {
+        Integer orderDay = orderRepository.countOrderByDay(); // Dùng Integer để xử lý trường hợp null
+        if (orderDay == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return orderDay; // Trả về giá trị nếu khác null
+    }
 
+    @Override
+    public Integer countOrderShipping() {
+        Integer order = orderRepository.countOrderShipping(); // Dùng Integer để xử lý trường hợp null
+        if (order == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return order; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countOrderPending() {
+        Integer order = orderRepository.countOrderPending(); // Dùng Integer để xử lý trường hợp null
+        if (order == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return order; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countOrderCanceled() {
+            Integer order = orderRepository.countOrderCancel(); // Dùng Integer để xử lý trường hợp null
+            if (order == null) {
+                return 0; // Trả về 0 nếu kết quả là null
+            }
+            return order; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countOrderByYear() {
+        Integer orderYear = orderRepository.countOrderByYear(); // Dùng Integer để xử lý trường hợp null
+        if (orderYear == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return orderYear; // Trả về giá trị nếu khác null
+    }
 
     private String OrderCodeAutomationCreating() {
         User user = util.getUserFromAuthentication();

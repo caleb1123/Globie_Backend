@@ -115,4 +115,22 @@ public class AccountServiceImpl implements AccountService {
         return roles.stream()
                 .map(role -> modelMapper.map(role, RoleDTO.class))
                 .collect(Collectors.toList());    }
+
+    @Override
+    public Integer countUserTrue() {
+        Integer user = userRepository.countUserTrue(); // Dùng Integer để xử lý trường hợp null
+        if (user == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return user; // Trả về giá trị nếu khác null
+    }
+
+    @Override
+    public Integer countUserFalse() {
+        Integer user = userRepository.countUserFalse(); // Dùng Integer để xử lý trường hợp null
+        if (user == null) {
+            return 0; // Trả về 0 nếu kết quả là null
+        }
+        return user; // Trả về giá trị nếu khác null
+    }
 }
