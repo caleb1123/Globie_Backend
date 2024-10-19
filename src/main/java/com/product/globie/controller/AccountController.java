@@ -99,4 +99,26 @@ public class AccountController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/count_true")
+    public ResponseEntity<ApiResponse<Integer>> countUserTrue() {
+        int count = accountService.countUserTrue();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched User")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count_false")
+    public ResponseEntity<ApiResponse<Integer>> countUserFalse() {
+        int count = accountService.countUserFalse();
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched User")
+                .data(count)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

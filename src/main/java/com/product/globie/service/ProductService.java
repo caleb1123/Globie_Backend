@@ -49,4 +49,10 @@ public interface ProductService {
     void deleteProductImage(String imageCode) throws IOException;
 
     ProductImageDTO getProductImageByCode(String imageCode);
+
+    Integer countProductSelling();
+
+    Integer countProductSold();
+
+    Integer countProductProcessing();
 }

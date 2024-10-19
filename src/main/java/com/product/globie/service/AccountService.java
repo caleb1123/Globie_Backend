@@ -20,4 +20,9 @@ public interface AccountService {
     void updateStatusUserToFalse(int uId);
 
     List<RoleDTO> getRoles();
+
+    Integer countUserTrue();
+
+    Integer countUserFalse();
+
 }
