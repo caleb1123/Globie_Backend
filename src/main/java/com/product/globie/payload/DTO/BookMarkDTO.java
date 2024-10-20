@@ -18,5 +18,5 @@ public class BookMarkDTO {
 
      int userId;
 
-     int productId;
+     ProductDTO product;
 }

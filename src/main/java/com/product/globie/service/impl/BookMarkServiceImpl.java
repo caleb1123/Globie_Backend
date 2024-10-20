@@ -5,6 +5,8 @@ import com.product.globie.entity.Bookmark;
 import com.product.globie.entity.Product;
 import com.product.globie.payload.DTO.BookMarkDTO;
 import com.product.globie.payload.DTO.CommentDTO;
+import com.product.globie.payload.DTO.ProductCategoryDTO;
+import com.product.globie.payload.DTO.ProductDTO;
 import com.product.globie.repository.BookMarkRepository;
 import com.product.globie.repository.ProductRepository;
 import com.product.globie.service.BookMarkService;
@@ -40,7 +42,7 @@ public class BookMarkServiceImpl implements BookMarkService {
                     BookMarkDTO bookMarkDTO = mapper.map(bookmark, BookMarkDTO.class);
 
                     if (bookmark.getProduct() != null) {
-                        bookMarkDTO.setProductId(bookmark.getProduct().getProductId());
+                        bookMarkDTO.setProduct(mapper.map(bookmark.getProduct(), ProductDTO.class));
                     }
                     if (bookmark.getUser() != null) {
                         bookMarkDTO.setUserId(bookmark.getUser().getUserId());
