@@ -105,8 +105,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse<List<ProductDTO>>> filterProducts( @RequestParam(required = false) String brand,
                                                                          @RequestParam(required = false) String origin,
                                                                          @RequestParam(required = false) Double minPrice,
-                                                                         @RequestParam(required = false) Double maxPrice) {
-        List<ProductDTO> productDTOList = productService.filterProducts(brand, origin, minPrice, maxPrice);
+                                                                         @RequestParam(required = false) Double maxPrice,
+                                                                         @RequestParam(required = false) Integer categoryId) {
+        List<ProductDTO> productDTOList = productService.filterProducts(categoryId, brand, origin, minPrice, maxPrice);
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched Product")

@@ -16,15 +16,22 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.productCategory.productCategoryId = :cId")
     List<Product> findProductByProductCategory(@Param("cId") int cId);
 
-    @Query("SELECT p FROM Product p WHERE " +
-            "(:brand IS NULL OR p.brand = :brand) AND " +
-            "(:origin IS NULL OR p.origin = :origin) AND " +
-            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR p.price <= :maxPrice)")
-    List<Product> filterProducts(@Param("brand") String brand,
+    @Query("SELECT p FROM Product p WHERE "
+            + "(:cId IS NULL OR p.productCategory.productCategoryId = :cId) "
+            + "AND (:brand IS NULL OR p.brand = :brand) "
+            + "AND (:origin IS NULL OR p.origin = :origin) "
+            + "AND (:minPrice IS NULL OR p.price >= :minPrice) "
+            + "AND (:maxPrice IS NULL OR p.price <= :maxPrice)")
+    List<Product> filterProducts(@Param("cId") Integer cId,
+                                 @Param("brand") String brand,
                                  @Param("origin") String origin,
                                  @Param("minPrice") Double minPrice,
                                  @Param("maxPrice") Double maxPrice);
+
+    @Query(value = "SELECT COUNT(*) AS total_selling_products\n" +
+            "FROM product\n" +
+            "WHERE user_id = :uId AND status = 'Selling'", nativeQuery = true)
+    int countProductOfUser(@Param("uId") int uId);
 
     @Query(value = "SELECT COUNT(*) AS product\n" +
             "FROM product\n" +

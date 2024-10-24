@@ -15,6 +15,14 @@ public interface OrderService {
 
     List<OrderDTO> getOrderStatusShippingOfUser();
 
+    List<OrderDTO> getOrders();
+
+    List<OrderDTO> getOrderStatusCancel();
+
+    List<OrderDTO> getOrderStatusShipping();
+
+    List<OrderDTO> getOrderStatusPending();
+
     List<OrderDTO> getOrderStatusDeliveredOfUser();
 
     OrderStoreDTO createOrderStore(CreateOrderStoreRequest createOrderRequest);

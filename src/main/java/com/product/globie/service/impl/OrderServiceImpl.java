@@ -179,6 +179,103 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
 
+        return orderDTOS.isEmpty() ? null : orderDTOS;
+    }
+
+    @Override
+    public List<OrderDTO> getOrders() {
+        List<Order> orders = orderRepository.findAll();
+        if(orders.isEmpty()){
+            throw new RuntimeException("There are no Orders.");
+        }
+        List<OrderDTO> orderDTOS = orders.stream()
+                .map(order -> {
+                    OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+
+                    if (order.getShippingAddress() != null) {
+                        orderDTO.setShippingId(order.getShippingAddress().getShippingId());
+                    }
+                    if (order.getUser() != null) {
+                        orderDTO.setUserId(order.getUser().getUserId());
+                    }
+
+                    return orderDTO;
+                })
+                .collect(Collectors.toList());
+
+        return orderDTOS.isEmpty() ? null : orderDTOS;
+    }
+
+    @Override
+    public List<OrderDTO> getOrderStatusCancel() {
+        List<Order> orders = orderRepository.findAll();
+        if(orders.isEmpty()){
+            throw new RuntimeException("There are no Orders.");
+        }
+        List<OrderDTO> orderDTOS = orders.stream()
+                .filter(Order -> Order.getStatus().equals(EOrderStatus.CANCELLED.name()))
+                .map(order -> {
+                    OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+
+                    if (order.getShippingAddress() != null) {
+                        orderDTO.setShippingId(order.getShippingAddress().getShippingId());
+                    }
+                    if (order.getUser() != null) {
+                        orderDTO.setUserId(order.getUser().getUserId());
+                    }
+
+                    return orderDTO;
+                })
+                .collect(Collectors.toList());
+
+        return orderDTOS.isEmpty() ? null : orderDTOS;    }
+
+    @Override
+    public List<OrderDTO> getOrderStatusShipping() {
+        List<Order> orders = orderRepository.findAll();
+        if(orders.isEmpty()){
+            throw new RuntimeException("There are no Orders.");
+        }
+        List<OrderDTO> orderDTOS = orders.stream()
+                .filter(Order -> Order.getStatus().equals(EOrderStatus.SHIPPING.name()))
+                .map(order -> {
+                    OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+
+                    if (order.getShippingAddress() != null) {
+                        orderDTO.setShippingId(order.getShippingAddress().getShippingId());
+                    }
+                    if (order.getUser() != null) {
+                        orderDTO.setUserId(order.getUser().getUserId());
+                    }
+
+                    return orderDTO;
+                })
+                .collect(Collectors.toList());
+
+        return orderDTOS.isEmpty() ? null : orderDTOS;    }
+
+    @Override
+    public List<OrderDTO> getOrderStatusPending() {
+        List<Order> orders = orderRepository.findAll();
+        if(orders.isEmpty()){
+            throw new RuntimeException("There are no Orders.");
+        }
+        List<OrderDTO> orderDTOS = orders.stream()
+                .filter(Order -> Order.getStatus().equals(EOrderStatus.PENDING.name()))
+                .map(order -> {
+                    OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+
+                    if (order.getShippingAddress() != null) {
+                        orderDTO.setShippingId(order.getShippingAddress().getShippingId());
+                    }
+                    if (order.getUser() != null) {
+                        orderDTO.setUserId(order.getUser().getUserId());
+                    }
+
+                    return orderDTO;
+                })
+                .collect(Collectors.toList());
+
         return orderDTOS.isEmpty() ? null : orderDTOS;    }
 
     @Override
