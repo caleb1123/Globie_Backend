@@ -158,7 +158,20 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findAll();
 
         List<ProductDTO> productDTOS = products.stream()
-                .filter(Product -> Product.getStatus().equals("Selling"))
+                .filter(product -> product.getStatus().equals("Selling"))
+                .sorted((p1, p2) -> {
+                    boolean isStorekeeper1 = p1.getUser() != null && p1.getUser().getRole().getRoleName().name().equals("STOREKEEPER");
+                    boolean isStorekeeper2 = p2.getUser() != null && p2.getUser().getRole().getRoleName().name().equals("STOREKEEPER");
+
+                    // Products of STOREKEEPER users should come first
+                    if (isStorekeeper1 && !isStorekeeper2) {
+                        return -1;
+                    } else if (!isStorekeeper1 && isStorekeeper2) {
+                        return 1;
+                    } else {
+                        return 0; // If both are the same, no change in order
+                    }
+                })
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -175,6 +188,7 @@ public class ProductServiceImpl implements ProductService {
 
         return productDTOS.isEmpty() ? null : productDTOS;
     }
+
 
     @Override
     public List<ProductDTO> getAllProductStatusSold() {
@@ -233,8 +247,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO createProduct(CreateProductRequest productRequest) {
-        Product product = new Product();
+        int quantityProductUser = productRepository.countProductOfUser(util.getUserFromAuthentication().getUserId());
+        if(quantityProductUser > 5){
+            throw new RuntimeException("You posted Product more than 5 products!");
+        }
 
+        Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());
         product.setBrand(productRequest.getBrand());
@@ -243,7 +261,11 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(productRequest.getQuantity());
         product.setWarranty(productRequest.getWarranty());
         product.setCreatedTime(new Date());
-        product.setStatus(EProductStatus.Processing.name());
+        if(util.getUserFromAuthentication().getRole().getRoleName().name().equals(ERole.STOREKEEPER.name())){
+            product.setStatus(EProductStatus.Selling.name());
+        }else {
+            product.setStatus(EProductStatus.Processing.name());
+        }
         product.setUser(util.getUserFromAuthentication());
 
         ProductCategory productCategory = productCategoryRepository
@@ -317,13 +339,21 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
-    public List<ProductDTO> filterProducts(String brand, String origin, Double minPrice, Double maxPrice) {
-        List<Product> products = productRepository.filterProducts(brand, origin, minPrice, maxPrice);
-        if(products.isEmpty()){
-            throw new RuntimeException("Have no Products by your filter!");
+    public List<ProductDTO> filterProducts(Integer cId, String brand, String origin, Double minPrice, Double maxPrice) {
+        List<Product> products = productRepository.filterProducts(
+                cId != null ? cId : null,
+                brand,
+                origin,
+                minPrice,
+                maxPrice
+        );
+
+        if (products.isEmpty()) {
+            return Collections.emptyList();
         }
+
         List<ProductDTO> productDTOS = products.stream()
-                .filter(Product -> Product.getStatus().equals("Selling"))
+                .filter(product -> product.getStatus().equals("Selling"))
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -340,6 +370,7 @@ public class ProductServiceImpl implements ProductService {
 
         return productDTOS.isEmpty() ? null : productDTOS;
     }
+
 
     @Override
     public List<ProductDTO> getProductByCategory(int cId) {

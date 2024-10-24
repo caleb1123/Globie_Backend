@@ -68,6 +68,50 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getOrders() {
+        List<OrderDTO> orderDTOS = orderService.getOrders();
+        ApiResponse<List<OrderDTO>> response = ApiResponse.<List<OrderDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(orderDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_shipping")
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getOrdersShipping() {
+        List<OrderDTO> orderDTOS = orderService.getOrderStatusShipping();
+        ApiResponse<List<OrderDTO>> response = ApiResponse.<List<OrderDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(orderDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_pending")
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getOrdersPending() {
+        List<OrderDTO> orderDTOS = orderService.getOrderStatusPending();
+        ApiResponse<List<OrderDTO>> response = ApiResponse.<List<OrderDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(orderDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_cancel")
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> getOrdersCancel() {
+        List<OrderDTO> orderDTOS = orderService.getOrderStatusCancel();
+        ApiResponse<List<OrderDTO>> response = ApiResponse.<List<OrderDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Order")
+                .data(orderDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/count_day")
     public ResponseEntity<ApiResponse<Integer>> countOrderByDay() {
         int countDay = orderService.countOrderByDay();

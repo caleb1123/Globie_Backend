@@ -28,7 +28,7 @@ public interface ProductService {
 
     ProductDTO createProduct(CreateProductRequest productRequest);
 
-    List<ProductDTO> filterProducts(String brand, String origin, Double minPrice, Double maxPrice);
+    List<ProductDTO> filterProducts(Integer cId, String brand, String origin, Double minPrice, Double maxPrice);
 
     void deleteProduct(int pId);
 

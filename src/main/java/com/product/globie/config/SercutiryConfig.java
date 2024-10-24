@@ -49,6 +49,8 @@ public class SercutiryConfig {
                 apiVersion + "/payment/call-back",
                 apiVersion + "/payment/payos_call_back",
                 apiVersion + "/order/**",
+                apiVersion + "/transaction/**",
+
 
         };
 
