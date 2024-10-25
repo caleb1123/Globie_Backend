@@ -5,9 +5,11 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.product.globie.entity.Enum.ERole;
 import com.product.globie.entity.OTPToken;
 import com.product.globie.entity.User;
 import com.product.globie.entity.Role;
+import com.product.globie.entity.UserMember;
 import com.product.globie.exception.AppException;
 import com.product.globie.exception.ErrorCode;
 import com.product.globie.payload.request.IntrospectRequest;
@@ -15,10 +17,13 @@ import com.product.globie.payload.response.AuthenticationResponse;
 import com.product.globie.payload.request.AuthenticationRequest;
 import com.product.globie.payload.request.SignUpRequest;
 import com.product.globie.payload.response.IntrospectResponse;
+import com.product.globie.repository.UserMemberRepository;
 import com.product.globie.repository.UserRepository;
 import com.product.globie.repository.OTPRepository;
 import com.product.globie.repository.RoleRepository;
 import com.product.globie.service.AuthenticationService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -31,10 +36,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -49,7 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private MailService emailService;
     @Autowired
     private OTPRepository otpRepository;
-
+    @Autowired
+    private UserMemberRepository userMemberRepository;
 
     @Value("${app.jwt-secret}")
     private String SIGNER_KEY;
@@ -109,17 +112,73 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (!authenticated) throw new AppException(ErrorCode.PASSWORD_NOT_CORRECT);
 
-        var token = generateToken(user);
-        Date expirationInstant = new Date(
-                Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
-        );
+        String storeName = null;
+        String address = null;
+        String phone = null;
 
-
-        return AuthenticationResponse.builder()
-                .token(token)
-                .authenticated(true)
-                .build();
+        if(user.getRole().getRoleName().name().equals(ERole.STOREKEEPER.name())) {
+            UserMember userMember = userMemberRepository.findByUserID(user.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Not found User Member."));
+            storeName = userMember.getStoreName();
+            address = userMember.getStoreAddress();
+            phone = userMember.getStorePhone();
+        }
+        if(storeName == null && address == null && phone == null){
+            var token = generateToken(user);
+            Date expirationInstant = new Date(
+                    Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+            );
+            return AuthenticationResponse.builder()
+                    .token(token)
+                    .authenticated(true)
+                    .build();
+        }else {
+            // Generate token with additional claims
+            var token = generateToken(user, storeName, address, phone);
+            Date expirationInstant = new Date(
+                    Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+            );
+            return AuthenticationResponse.builder()
+                    .token(token)
+                    .authenticated(true)
+                    .build();
+        }
     }
+
+    // Modify the generateToken method to accept additional claims
+    private String generateToken(User user, String storeName, String address, String phone) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+
+        // Tạo JWTClaimsSet với các claims
+        JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder()
+                .subject(user.getUserName())
+                .issueTime(new Date())
+                .expirationTime(new Date(
+                        Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+                ))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("role", buildScope(user))
+                .claim("active", user.isStatus());
+
+        // Thêm thông tin cửa hàng nếu có
+        if (storeName != null) {
+            claimsBuilder.claim("storeName", storeName);
+            claimsBuilder.claim("storeAddress", address);
+            claimsBuilder.claim("storePhone", phone);
+        }
+
+        JWTClaimsSet jwtClaimsSet = claimsBuilder.build();
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+        JWSObject jwsObject = new JWSObject(header, payload);
+
+        try {
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public AuthenticationResponse register(SignUpRequest request) {

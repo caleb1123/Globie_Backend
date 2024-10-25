@@ -46,6 +46,28 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/all_store")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusSellingStore() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusSellingStore();
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all_user")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusSellingUser() {
+        List<ProductDTO> productDTOList = productService.getAllProductStatusSellingUser();
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/all/sold")
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProductStatusSold() {
         List<ProductDTO> productDTOList = productService.getAllProductStatusSold();
@@ -116,9 +138,42 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> searchProducts(@RequestParam(required = false) String keyWord) {
+        List<ProductDTO> productDTOList = productService.searchProductsByNameOrBrand(keyWord);
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/category/{cId}")
     public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductByCategoryId(@PathVariable int cId) {
         List<ProductDTO> productDTOList = productService.getProductByCategory(cId);
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/category_store/{cId}")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductStoreByCategoryId(@PathVariable int cId) {
+        List<ProductDTO> productDTOList = productService.getProductByCategoryOfStore(cId);
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully fetched Product")
+                .data(productDTOList)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/category_user/{cId}")
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductUserByCategoryId(@PathVariable int cId) {
+        List<ProductDTO> productDTOList = productService.getProductByCategoryOfUser(cId);
         ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched Product")

@@ -47,4 +47,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "FROM product\n" +
             "WHERE status = 'Sold'; ", nativeQuery = true)
     Integer countProductSold();
+
+    @Query("SELECT p FROM Product p WHERE p.status = 'Selling' AND (p.productName LIKE %:searchKeyword% OR p.brand LIKE %:searchKeyword%)")
+    List<Product> searchProductsByNameOrBrand(@Param("searchKeyword") String searchKeyword);
 }
