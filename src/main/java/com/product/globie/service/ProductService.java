@@ -6,6 +6,7 @@ import com.product.globie.payload.DTO.ProductImageDTO;
 import com.product.globie.payload.request.CreateProductRequest;
 import com.product.globie.payload.request.UpdatePostRequest;
 import com.product.globie.payload.request.UpdateProductRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,6 +27,10 @@ public interface ProductService {
 
     List<ProductDTO> getAllProductStatusProcessing();
 
+    List<ProductDTO> getAllProductStatusSellingStore();
+
+    List<ProductDTO> getAllProductStatusSellingUser();
+
     ProductDTO createProduct(CreateProductRequest productRequest);
 
     List<ProductDTO> filterProducts(Integer cId, String brand, String origin, Double minPrice, Double maxPrice);
@@ -39,6 +44,10 @@ public interface ProductService {
     ProductDTO getProductDetail(int pId);
 
     List<ProductDTO> getProductByCategory(int cId);
+
+    List<ProductDTO> getProductByCategoryOfUser(int cId);
+
+    List<ProductDTO> getProductByCategoryOfStore(int cId);
 
     List<ProductImageDTO> uploadMultipleProductImages(MultipartFile[] multipartFiles, int productId) throws IOException;
 
@@ -55,4 +64,7 @@ public interface ProductService {
     Integer countProductSold();
 
     Integer countProductProcessing();
+
+    List<ProductDTO> searchProductsByNameOrBrand(@Param("searchKeyword") String searchKeyword);
+
 }

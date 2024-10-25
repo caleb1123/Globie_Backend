@@ -244,6 +244,55 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS.isEmpty() ? null : productDTOS;
     }
 
+    @Override
+    public List<ProductDTO> getAllProductStatusSellingStore() {
+        List<Product> products = productRepository.findAll();
+
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(product -> product.getStatus().equals("Selling"))
+                .filter(product -> product.getUser() != null &&
+                        product.getUser().getRole().getRoleName().name().equals("STOREKEEPER"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;
+    }
+
+    @Override
+    public List<ProductDTO> getAllProductStatusSellingUser() {
+        List<Product> products = productRepository.findAll();
+
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(product -> product.getStatus().equals("Selling"))
+                .filter(product -> product.getUser() != null &&
+                        product.getUser().getRole().getRoleName().name().equals("USER"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS.isEmpty() ? null : productDTOS;    }
+
 
     @Override
     public ProductDTO createProduct(CreateProductRequest productRequest) {
@@ -379,6 +428,7 @@ public class ProductServiceImpl implements ProductService {
             return Collections.emptyList();
         }
         List<ProductDTO> productDTOS = products.stream()
+                .filter(product -> product.getStatus().equals("Selling"))
                 .map(product -> {
                     ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
@@ -394,6 +444,60 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
         return productDTOS; // No need for the additional check here
+    }
+
+    @Override
+    public List<ProductDTO> getProductByCategoryOfUser(int cId) {
+        List<Product> products = productRepository.findProductByProductCategory(cId);
+        if (products.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(product -> product.getStatus().equals("Selling"))
+                .filter(product -> product.getUser() != null &&
+                        product.getUser().getRole().getRoleName().name().equals("USER"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByCategoryOfStore(int cId) {
+        List<Product> products = productRepository.findProductByProductCategory(cId);
+        if (products.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .filter(product -> product.getStatus().equals("Selling"))
+                .filter(product -> product.getUser() != null &&
+                        product.getUser().getRole().getRoleName().name().equals("STOREKEEPER"))
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS;
     }
 
     @Override
@@ -540,6 +644,29 @@ public class ProductServiceImpl implements ProductService {
             return product; // Trả về giá trị nếu khác null
     }
 
+    @Override
+    public List<ProductDTO> searchProductsByNameOrBrand(String searchKeyword) {
+        List<Product> products = productRepository.searchProductsByNameOrBrand(searchKeyword);
+        if (products.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> {
+                    ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+                    if (product.getProductCategory() != null) {
+                        productDTO.setProductCategory(mapper.map(product.getProductCategory(), ProductCategoryDTO.class));
+                    }
+                    if (product.getUser() != null) {
+                        productDTO.setUser(mapper.map(product.getUser(), AccountDTO.class));
+                    }
+
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
+
+        return productDTOS;
+    }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));

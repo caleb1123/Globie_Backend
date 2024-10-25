@@ -11,6 +11,9 @@ public interface UserMemberRepository extends JpaRepository<UserMember, Integer>
     @Query("select um from UserMember um where um.order.orderId = :id")
     Optional<UserMember> findByOrder(@Param("id") int id);
 
+    @Query("select um from UserMember um where um.user.userId = :id")
+    Optional<UserMember> findByUserID(@Param("id") int id);
+
     Optional<UserMember> findByStorePhone(String storePhone);
 
     Optional<UserMember> findByStoreName(String storeName);
