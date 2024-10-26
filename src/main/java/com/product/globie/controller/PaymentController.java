@@ -29,7 +29,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("${api.version}/payment")
 @Slf4j
-@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class PaymentController {
     @Autowired
     PaymentService paymentService;
