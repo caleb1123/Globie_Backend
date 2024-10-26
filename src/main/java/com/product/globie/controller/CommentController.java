@@ -18,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/comment")
 @Slf4j
+@CrossOrigin(origins = "https://globie-front-cgxbtuyd8-dolakiens-projects.vercel.app")
+
 public class CommentController {
     @Autowired
     CommentService commentService;
