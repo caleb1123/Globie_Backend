@@ -29,7 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("${api.version}/payment")
 @Slf4j
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class PaymentController {
     @Autowired
     PaymentService paymentService;
@@ -82,8 +82,8 @@ public class PaymentController {
 
     @GetMapping("/payos_call_back")
     public void payOSCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String url = "http://localhost:3000/payment-return";
-        String urlFail = "http://localhost:3000/payment-return";
+        String url = "https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app/payment-return";
+        String urlFail = "https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app/payment-return";
 
         PaymentResponse payment = paymentService.handleCallbackPayOS(request);
         if (payment.getCode().equals("00")) {
