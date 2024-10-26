@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/product")
 @Slf4j
-@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class ProductController {
     @Autowired
     ProductService productService;

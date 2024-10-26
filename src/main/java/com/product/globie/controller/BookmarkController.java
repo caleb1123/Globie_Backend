@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/bookmark")
 @Slf4j
-@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class BookmarkController {
     @Autowired
     BookMarkService bookMarkService;

@@ -27,7 +27,6 @@ import java.text.ParseException;
 @RestController
 @RequestMapping("${api.version}/authen")
 @Slf4j
-@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
