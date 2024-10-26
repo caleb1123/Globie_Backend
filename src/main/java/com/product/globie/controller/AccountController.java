@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/account")
 @Slf4j
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app")
 public class AccountController {
     @Autowired
     private AccountService accountService;

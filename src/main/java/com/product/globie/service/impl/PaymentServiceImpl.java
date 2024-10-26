@@ -356,16 +356,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private String getBaseUrl(HttpServletRequest request) {
-        String scheme = request.getScheme();
-        String serverName = request.getServerName();
-
-        // Sử dụng port 3000
-        int serverPort = 3000;
-        String contextPath = request.getContextPath();
-
-        String url = scheme + "://" + serverName + ":" + serverPort + contextPath;
-        return url;
+        // Trả về URL cố định
+        return "https://globie-front-9hx0i0h1i-dolakiens-projects.vercel.app";
     }
+
 
 
     private Date setTransactionDateFromPayDate(String payDate) {
