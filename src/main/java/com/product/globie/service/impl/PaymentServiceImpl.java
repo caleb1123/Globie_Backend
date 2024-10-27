@@ -357,7 +357,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private String getBaseUrl(HttpServletRequest request) {
         // Trả về URL cố định
-        return "https://globie-front-cgxbtuyd8-dolakiens-projects.vercel.app";
+        return "https://globie.vercel.app";
     }
 
 
