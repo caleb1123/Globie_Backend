@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/order")
 @Slf4j
-@CrossOrigin(origins = "https://globie-front-cgxbtuyd8-dolakiens-projects.vercel.app")
+@CrossOrigin(origins = "https://globie.vercel.app")
 
 public class OrderController {
     @Autowired
