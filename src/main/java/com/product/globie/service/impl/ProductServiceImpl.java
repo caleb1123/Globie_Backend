@@ -297,8 +297,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO createProduct(CreateProductRequest productRequest) {
         int quantityProductUser = productRepository.countProductOfUser(util.getUserFromAuthentication().getUserId());
-        if(quantityProductUser > 5){
-            throw new RuntimeException("You posted Product more than 5 products!");
+        if(util.getUserFromAuthentication().getRole().getRoleName().name().equals(ERole.USER.name())) {
+            if (quantityProductUser > 5) {
+                throw new RuntimeException("You posted Product more than 5 products!");
+            }
         }
 
         Product product = new Product();
