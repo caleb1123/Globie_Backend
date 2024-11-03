@@ -20,7 +20,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "nvarchar(255)")
     private String productName;
 
     @Column(nullable = false, columnDefinition = "nvarchar(max)")
@@ -38,7 +38,7 @@ public class Product {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "nvarchar(255)")
     private String warranty;
 
     @Column(name = "created_time")

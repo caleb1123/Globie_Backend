@@ -19,10 +19,10 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productCategoryId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "nvarchar(255)")
     private String categoryName;
 
-    @Column
+    @Column(columnDefinition = "nvarchar(255)")
     private String description;
 
     @Column

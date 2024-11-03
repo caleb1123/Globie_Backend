@@ -28,7 +28,7 @@ public class UserMember {
     @Column(nullable = false, columnDefinition = "nvarchar(255)")
     private String storeAddress;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(12)")
+    @Column(nullable = false)
     private String storePhone;
 
     @Column

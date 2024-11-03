@@ -20,10 +20,10 @@ public class MemberLevel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberLevelId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "nvarchar(255)")
     private String levelName;
 
-    @Column
+    @Column(columnDefinition = "nvarchar(255)")
     private String description;
 
     @Column(nullable = false)
