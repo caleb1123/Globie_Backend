@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(columnDefinition = "nvarchar(255)")
     private String fullName;
 
     @Column

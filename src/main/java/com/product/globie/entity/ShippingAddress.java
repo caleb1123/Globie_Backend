@@ -19,7 +19,7 @@ public class ShippingAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int shippingId;
 
-    @Column
+    @Column(columnDefinition = "nvarchar(255)")
     private String address;
 
     @Column
